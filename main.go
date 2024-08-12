@@ -15,6 +15,7 @@ import (
 const (
 	screenWidth  = 640
 	screenHeight = 480
+	scale        = 2
 )
 
 type Game struct {
@@ -30,8 +31,8 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 
 	tileset := g.Map.Tilesets[0]
-	sx := float64(screenWidth) / float64(g.Map.Width*tileset.TileWidth)
-	sy := float64(screenHeight) / float64(g.Map.Height*tileset.TileHeight)
+	sx := scale * float64(screenWidth) / float64(g.Map.Width*tileset.TileWidth)
+	sy := scale * float64(screenHeight) / float64(g.Map.Height*tileset.TileHeight)
 
 	for _, l := range g.Map.Layers {
 		for i, t := range l.Tiles {
@@ -91,8 +92,6 @@ func main() {
 	}
 
 	game.prepareTiles()
-
-	fmt.Println("drawing with scale", float64(screenWidth)/float64(game.Map.Width*tileset.TileWidth))
 
 	ebiten.SetWindowSize(screenWidth, screenHeight)
 	ebiten.SetWindowTitle("Hello, World!")
