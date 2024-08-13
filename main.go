@@ -29,9 +29,8 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 
-	tileset := g.Map.Tilesets[0]
-	sx := scale * float64(screenWidth) / float64(g.Map.Width*tileset.TileWidth)
-	sy := scale * float64(screenHeight) / float64(g.Map.Height*tileset.TileHeight)
+	sx := scale * float64(screenWidth) / float64(g.Map.Width*g.Map.TileWidth)
+	sy := scale * float64(screenHeight) / float64(g.Map.Height*g.Map.TileHeight)
 
 	for _, l := range g.Map.Layers {
 		for i, t := range l.Tiles {
