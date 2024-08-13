@@ -19,9 +19,8 @@ const (
 )
 
 type Game struct {
-	Map     *tiled.Map
-	Tileset *ebiten.Image
-	Tiles   map[uint32]*ebiten.Image
+	Map   *tiled.Map
+	Tiles map[uint32]*ebiten.Image
 }
 
 func (g *Game) Update() error {
@@ -43,9 +42,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			)
 			op.GeoM.Scale(sx, sy)
 
-			id := t.ID
 			if !t.Nil {
-				tile := g.Tiles[id]
+				gid := t.ID + t.Tileset.FirstGID - 1
+				tile := g.Tiles[gid]
 				screen.DrawImage(tile, op)
 			}
 
@@ -59,39 +58,49 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 	return screenWidth, screenHeight
 }
 
-func (g *Game) prepareTiles() {
-	tileset := g.Map.Tilesets[0]
+func (g *Game) loadTilesets() error {
 	g.Tiles = map[uint32]*ebiten.Image{}
-	for i := uint32(0); i < uint32(tileset.TileCount); i++ {
-		rect := tileset.GetTileRect(i)
-		g.Tiles[i] = ebiten.NewImageFromImage(g.Tileset.SubImage(rect))
+	for _, tileset := range g.Map.Tilesets {
+		fmt.Println("loading tileset", tileset.Name)
+		source, err := os.ReadFile("tilesets/" + tileset.Image.Source)
+		if err != nil {
+			return fmt.Errorf("error loading tileset image file: %w", err)
+		}
+
+		img, _, err := image.Decode(bytes.NewReader(source))
+		if err != nil {
+			return fmt.Errorf("error decoding tileset image file: %w", err)
+		}
+		tilesetImage := ebiten.NewImageFromImage(img)
+
+		offset := tileset.FirstGID - 1
+		for i := uint32(0); i < uint32(tileset.TileCount); i++ {
+			gid := i + offset
+			fmt.Println("loading tile", i, "global", gid)
+			rect := tileset.GetTileRect(i)
+			g.Tiles[gid] = ebiten.NewImageFromImage(tilesetImage.SubImage(rect))
+		}
 	}
+	return nil
 }
 
 func main() {
 
-	// Parse .tmx file.
-	gameMap, err := tiled.LoadFile("untitled.tmx")
+	gameMap, err := tiled.LoadFile("tilesets/tilemap.tmx")
 	if err != nil {
 		fmt.Printf("error parsing map: %s", err.Error())
 		os.Exit(2)
 	}
 
-	tileset := gameMap.Tilesets[0]
-	source, err := os.ReadFile(tileset.Image.Source)
+	game := Game{
+		Map: gameMap,
+	}
 
-	tilesetImage, _, err := image.Decode(bytes.NewReader(source))
+	err = game.loadTilesets()
 	if err != nil {
-		fmt.Printf("error loading tileset: %s", err.Error())
+		fmt.Printf("error parsing map: %s", err.Error())
 		os.Exit(2)
 	}
-
-	game := Game{
-		Map:     gameMap,
-		Tileset: ebiten.NewImageFromImage(tilesetImage),
-	}
-
-	game.prepareTiles()
 
 	ebiten.SetWindowSize(screenWidth, screenHeight)
 	ebiten.SetWindowTitle("Hello, World!")
