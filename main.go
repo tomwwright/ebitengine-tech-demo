@@ -16,21 +16,21 @@ const (
 	screenWidth  = 640
 	screenHeight = 480
 	scale        = 2
+	dt           = 1.0 / 60.0
 )
 
 type Game struct {
-	Map   *tiled.Map
-	Tiles map[uint32]*ebiten.Image
+	Map    *tiled.Map
+	Player *Player
+	Tiles  map[uint32]*ebiten.Image
 }
 
 func (g *Game) Update() error {
+	g.Player.Update()
 	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-
-	sx := scale * float64(screenWidth) / float64(g.Map.Width*g.Map.TileWidth)
-	sy := scale * float64(screenHeight) / float64(g.Map.Height*g.Map.TileHeight)
 
 	for _, l := range g.Map.Layers {
 		for i, t := range l.Tiles {
@@ -39,7 +39,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				float64(l.OffsetX+(i%g.Map.Width)*g.Map.TileWidth),
 				float64(l.OffsetY+(i/g.Map.Width)*g.Map.TileHeight),
 			)
-			op.GeoM.Scale(sx, sy)
+			op.GeoM.Scale(scale, scale)
 
 			if !t.Nil {
 				gid := t.ID + t.Tileset.FirstGID - 1
@@ -49,6 +49,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 		}
 	}
+
+	g.Player.Draw(screen)
 
 	ebitenutil.DebugPrint(screen, "Hello, World!")
 }
@@ -99,6 +101,11 @@ func main() {
 	if err != nil {
 		fmt.Printf("error parsing map: %s", err.Error())
 		os.Exit(2)
+	}
+
+	game.Player = &Player{
+		Position: [2]float32{16, 16},
+		Sprite:   game.Tiles[217],
 	}
 
 	ebiten.SetWindowSize(screenWidth, screenHeight)
