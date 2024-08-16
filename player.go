@@ -21,7 +21,7 @@ func (p *Player) Update() {
 	}
 
 	if p.MoveAnimation == nil {
-		d := float32(16)
+		d := float32(8)
 		if ebiten.IsKeyPressed(ebiten.KeyRight) {
 			p.setMoveAnimation([2]float32{p.Position[0] + d, p.Position[1]})
 		} else if ebiten.IsKeyPressed(ebiten.KeyLeft) {
@@ -36,7 +36,7 @@ func (p *Player) Update() {
 }
 
 func (p *Player) setMoveAnimation(to [2]float32) {
-	p.MoveAnimation = NewSliceTween(p.Position[:], to[:], 0.4, ease.Linear)
+	p.MoveAnimation = NewSliceTween(p.Position[:], to[:], 0.12, ease.Linear)
 }
 
 func (p *Player) Draw(screen *ebiten.Image) {
