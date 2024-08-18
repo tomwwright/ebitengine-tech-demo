@@ -7,7 +7,7 @@ import (
 )
 
 type MovementData struct {
-	Tween *tween.SliceTween
+	Tween *tween.Vec2Tween
 }
 
 var Movement = donburi.NewComponentType[MovementData]()

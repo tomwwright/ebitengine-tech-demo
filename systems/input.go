@@ -9,6 +9,7 @@ import (
 	"github.com/tanema/gween/ease"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
+	"github.com/yohamta/donburi/features/math"
 	"github.com/yohamta/donburi/features/transform"
 	"github.com/yohamta/donburi/filter"
 	"github.com/yohamta/donburi/query"
@@ -41,10 +42,10 @@ func (input *Input) Update(ecs *ecs.ECS) {
 	}
 
 	transform := components.Transform.Get(playerEntry)
-	d := float32(8) * float32(transform.LocalScale.X)
-	from := [2]float32{float32(transform.LocalPosition.X), float32(transform.LocalPosition.Y)}
+	d := float64(8) * transform.LocalScale.X
+	from := transform.LocalPosition
 	to := getMovement(from, direction, d)
-	movement.Tween = tween.NewSliceTween(from[:], to[:], 0.12, ease.Linear)
+	movement.Tween = tween.NewVec2Tween(from, to, 0.12, ease.Linear)
 }
 
 type InputDirection int
@@ -70,16 +71,16 @@ func getInputDirection() InputDirection {
 	return inputNone
 }
 
-func getMovement(from [2]float32, direction InputDirection, d float32) [2]float32 {
+func getMovement(from math.Vec2, direction InputDirection, d float64) math.Vec2 {
 	switch direction {
 	case inputDirectionUp:
-		return [2]float32{from[0], from[1] - d}
+		return math.NewVec2(from.X, from.Y-d)
 	case inputDirectionDown:
-		return [2]float32{from[0], from[1] + d}
+		return math.NewVec2(from.X, from.Y+d)
 	case inputDirectionLeft:
-		return [2]float32{from[0] - d, from[1]}
+		return math.NewVec2(from.X-d, from.Y)
 	case inputDirectionRight:
-		return [2]float32{from[0] + d, from[1]}
+		return math.NewVec2(from.X+d, from.Y)
 	}
-	return [2]float32{0, 0}
+	return from
 }

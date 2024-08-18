@@ -3,26 +3,25 @@ package tween
 import (
 	"github.com/tanema/gween"
 	"github.com/tanema/gween/ease"
+	"github.com/yohamta/donburi/features/math"
 )
 
-type SliceTween struct {
-	Tweens []*gween.Tween
+type Vec2Tween struct {
+	Tweens [2]*gween.Tween
 }
 
-func NewSliceTween(from []float32, to []float32, duration float32, easing ease.TweenFunc) *SliceTween {
-	tweens := make([]*gween.Tween, len(from))
-	for i := range from {
-		tweens[i] = gween.New(from[i], to[i], duration, easing)
-	}
-	return &SliceTween{
+func NewVec2Tween(from math.Vec2, to math.Vec2, duration float32, easing ease.TweenFunc) *Vec2Tween {
+	var tweens [2]*gween.Tween
+	tweens[0] = gween.New(float32(from.X), float32(to.X), duration, easing)
+	tweens[1] = gween.New(float32(from.Y), float32(to.Y), duration, easing)
+	return &Vec2Tween{
 		Tweens: tweens,
 	}
 }
 
-func (s *SliceTween) Update(dt float32) (current []float32, isFinished bool) {
-	current = make([]float32, len(s.Tweens))
-	for i, tween := range s.Tweens {
-		current[i], isFinished = tween.Update(dt)
-	}
-	return current, isFinished
+func (s *Vec2Tween) Update(dt float32) (current math.Vec2, isFinished bool) {
+	x, _ := s.Tweens[0].Update(dt)
+	y, isFinished := s.Tweens[1].Update(dt)
+
+	return math.NewVec2(float64(x), float64(y)), isFinished
 }

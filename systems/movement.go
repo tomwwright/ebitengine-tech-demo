@@ -6,7 +6,6 @@ import (
 
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
-	"github.com/yohamta/donburi/features/math"
 	"github.com/yohamta/donburi/features/transform"
 	"github.com/yohamta/donburi/filter"
 	"github.com/yohamta/donburi/query"
@@ -30,7 +29,7 @@ func (m *Movement) Update(ecs *ecs.ECS) {
 		if movement.Tween != nil {
 			transform := components.Transform.Get(entry)
 			current, isFinished := movement.Tween.Update(config.DeltaTime)
-			transform.LocalPosition = math.NewVec2(float64(current[0]), float64(current[1]))
+			transform.LocalPosition = current
 			if isFinished {
 				movement.Tween = nil
 			}
