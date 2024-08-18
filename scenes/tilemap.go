@@ -6,13 +6,13 @@ import (
 	"techdemo/components"
 	"techdemo/config"
 	"techdemo/systems"
+	"techdemo/tags"
 	"techdemo/tilemap"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
 	"github.com/yohamta/donburi/features/math"
-	"github.com/yohamta/donburi/features/transform"
 )
 
 type TilemapScene struct {
@@ -30,9 +30,12 @@ func NewTilemapScene(filename string) (*TilemapScene, error) {
 		ecs:     ecs.NewECS(donburi.NewWorld()),
 		Tilemap: tilemap,
 	}
+	scene.ecs.AddSystem(systems.NewMovement().Update)
+	scene.ecs.AddSystem(systems.NewInput().Update)
 	scene.ecs.AddRenderer(ecs.LayerDefault, systems.NewRender().Draw)
 
 	constructTileSprites(scene)
+	constructPlayer(scene)
 
 	return scene, nil
 }
@@ -53,10 +56,10 @@ func constructTileSprites(s *TilemapScene) {
 		for i, t := range l.Tiles {
 			if !t.Nil {
 
-				entity := w.Create(transform.Transform, components.Sprite)
+				entity := w.Create(components.Transform, components.Sprite)
 				entry := w.Entry(entity)
 
-				transform := transform.Transform.Get(entry)
+				transform := components.Transform.Get(entry)
 				x := float64(l.OffsetX + (i%tilemap.Width)*tilemap.TileWidth)
 				y := float64(l.OffsetY + (i/tilemap.Width)*tilemap.TileHeight)
 				scale := float64(config.Scale)
@@ -70,4 +73,18 @@ func constructTileSprites(s *TilemapScene) {
 
 		}
 	}
+}
+
+func constructPlayer(s *TilemapScene) {
+	w := s.ecs.World
+	entity := w.Create(tags.Player, components.Transform, components.Sprite, components.Movement)
+	entry := w.Entry(entity)
+
+	transform := components.Transform.Get(entry)
+	scale := float64(config.Scale)
+	transform.LocalPosition = math.NewVec2(16, 16)
+	transform.LocalScale = math.NewVec2(scale, scale)
+
+	sprite := components.Sprite.Get(entry)
+	sprite.Image = s.Tilemap.Tiles[217]
 }

@@ -1,4 +1,4 @@
-package main
+package tween
 
 import (
 	"github.com/tanema/gween"
