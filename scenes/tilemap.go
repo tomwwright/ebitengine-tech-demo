@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"image/color"
 	"techdemo/components"
-	"techdemo/config"
 	"techdemo/systems"
 	"techdemo/tags"
 	"techdemo/tilemap"
@@ -13,6 +12,7 @@ import (
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
 	"github.com/yohamta/donburi/features/math"
+	"github.com/yohamta/donburi/features/transform"
 )
 
 type TilemapScene struct {
@@ -38,6 +38,7 @@ func NewTilemapScene(filename string) (*TilemapScene, error) {
 
 	constructTileSprites(scene)
 	constructPlayer(scene)
+	constructCamera(scene)
 
 	return scene, nil
 }
@@ -64,8 +65,8 @@ func constructTileSprites(s *TilemapScene) {
 				transform := components.Transform.Get(entry)
 				x := float64(l.OffsetX + (i%tilemap.Width)*tilemap.TileWidth)
 				y := float64(l.OffsetY + (i/tilemap.Width)*tilemap.TileHeight)
-				scale := float64(config.Scale)
-				transform.LocalPosition = math.NewVec2(x*scale, y*scale)
+				scale := float64(1)
+				transform.LocalPosition = math.NewVec2(x, y)
 				transform.LocalScale = math.NewVec2(scale, scale)
 
 				sprite := components.Sprite.Get(entry)
@@ -83,7 +84,22 @@ func constructPlayer(s *TilemapScene) {
 	entry := w.Entry(entity)
 
 	transform := components.Transform.Get(entry)
-	scale := float64(config.Scale)
+	scale := float64(1)
 	transform.LocalPosition = math.NewVec2(16, 16)
 	transform.LocalScale = math.NewVec2(scale, scale)
+}
+
+func constructCamera(s *TilemapScene) {
+	w := s.ecs.World
+	entity := w.Create(tags.Camera, components.Transform, components.Movement)
+	entry := w.Entry(entity)
+
+	t := components.Transform.Get(entry)
+	scale := float64(2)
+	t.LocalPosition = math.NewVec2(-16, -16)
+	t.LocalScale = math.NewVec2(scale, scale)
+	t.LocalRotation = 0
+
+	playerEntry := tags.Player.MustFirst(w)
+	transform.AppendChild(playerEntry, entry, false)
 }

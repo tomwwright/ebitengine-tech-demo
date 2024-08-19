@@ -2,7 +2,7 @@
 
 - [x] Render tiles [done]
 - [x] Render animated character [done]
-- [ ] Camera movement
+- [x] Camera movement [done]
 - [ ] Collisions
 - [ ] Occlusions
 - [ ] Dialogue
