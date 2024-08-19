@@ -30,6 +30,7 @@ func NewTilemapScene(filename string) (*TilemapScene, error) {
 		ecs:     ecs.NewECS(donburi.NewWorld()),
 		Tilemap: tilemap,
 	}
+	scene.ecs.AddSystem(systems.NewAnimation().Update)
 	scene.ecs.AddSystem(systems.NewMovement().Update)
 	scene.ecs.AddSystem(systems.NewInput().Update)
 	scene.ecs.AddRenderer(ecs.LayerDefault, systems.NewRender().Draw)
@@ -77,7 +78,7 @@ func constructTileSprites(s *TilemapScene) {
 
 func constructPlayer(s *TilemapScene) {
 	w := s.ecs.World
-	entity := w.Create(tags.Player, components.Transform, components.Sprite, components.Movement)
+	entity := w.Create(tags.Player, components.Transform, components.Sprite, components.Movement, components.Animation)
 	entry := w.Entry(entity)
 
 	transform := components.Transform.Get(entry)
@@ -87,4 +88,10 @@ func constructPlayer(s *TilemapScene) {
 
 	sprite := components.Sprite.Get(entry)
 	sprite.Image = s.Tilemap.Tiles[217]
+
+	animation := components.Animation.Get(entry)
+
+	a, _ := s.Tilemap.GetAnimation("player", "idle")
+	animation.Frames = a.Frames
+	animation.Durations = a.Durations
 }
