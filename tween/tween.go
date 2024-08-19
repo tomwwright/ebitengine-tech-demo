@@ -8,6 +8,8 @@ import (
 
 type Vec2Tween struct {
 	Tweens [2]*gween.Tween
+	From   math.Vec2
+	To     math.Vec2
 }
 
 func NewVec2Tween(from math.Vec2, to math.Vec2, duration float32, easing ease.TweenFunc) *Vec2Tween {
@@ -16,6 +18,8 @@ func NewVec2Tween(from math.Vec2, to math.Vec2, duration float32, easing ease.Tw
 	tweens[1] = gween.New(float32(from.Y), float32(to.Y), duration, easing)
 	return &Vec2Tween{
 		Tweens: tweens,
+		From:   from,
+		To:     to,
 	}
 }
 

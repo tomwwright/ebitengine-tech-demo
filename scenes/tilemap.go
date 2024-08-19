@@ -33,6 +33,7 @@ func NewTilemapScene(filename string) (*TilemapScene, error) {
 	scene.ecs.AddSystem(systems.NewAnimation().Update)
 	scene.ecs.AddSystem(systems.NewMovement().Update)
 	scene.ecs.AddSystem(systems.NewInput().Update)
+	scene.ecs.AddSystem(systems.NewPlayerAnimation(tilemap).Update)
 	scene.ecs.AddRenderer(ecs.LayerDefault, systems.NewRender().Draw)
 
 	constructTileSprites(scene)
@@ -85,13 +86,4 @@ func constructPlayer(s *TilemapScene) {
 	scale := float64(config.Scale)
 	transform.LocalPosition = math.NewVec2(16, 16)
 	transform.LocalScale = math.NewVec2(scale, scale)
-
-	sprite := components.Sprite.Get(entry)
-	sprite.Image = s.Tilemap.Tiles[217]
-
-	animation := components.Animation.Get(entry)
-
-	a, _ := s.Tilemap.GetAnimation("player", "idle")
-	animation.Frames = a.Frames
-	animation.Durations = a.Durations
 }

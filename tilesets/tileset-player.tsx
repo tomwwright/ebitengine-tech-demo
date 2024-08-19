@@ -6,27 +6,30 @@
    <property name="animationName" value="idle"/>
   </properties>
   <animation>
-   <frame tileid="0" duration="1000"/>
-   <frame tileid="1" duration="1000"/>
+   <frame tileid="0" duration="600"/>
+   <frame tileid="1" duration="600"/>
   </animation>
  </tile>
  <tile id="3">
- <properties>
+  <properties>
    <property name="animationName" value="walk"/>
   </properties>
   <animation>
-   <frame tileid="4" duration="500"/>
-   <frame tileid="3" duration="500"/>
-   <frame tileid="4" duration="500"/>
-   <frame tileid="5" duration="500"/>
+   <frame tileid="3" duration="200"/>
+   <frame tileid="4" duration="200"/>
+   <frame tileid="5" duration="200"/>
+   <frame tileid="4" duration="200"/>
   </animation>
  </tile>
  <tile id="6">
+  <properties>
+   <property name="animationName" value="walkUp"/>
+  </properties>
   <animation>
-   <frame tileid="6" duration="500"/>
-   <frame tileid="7" duration="500"/>
-   <frame tileid="8" duration="500"/>
-   <frame tileid="9" duration="500"/>
+   <frame tileid="7" duration="200"/>
+   <frame tileid="8" duration="200"/>
+   <frame tileid="9" duration="200"/>
+   <frame tileid="6" duration="200"/>
   </animation>
  </tile>
 </tileset>

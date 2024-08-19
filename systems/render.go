@@ -44,16 +44,17 @@ func (r *Render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 	for _, layer := range layers {
 		for _, entry := range byLayer[layer] {
 			sprite := components.Sprite.Get(entry)
+			if sprite.Image != nil {
+				op := &ebiten.DrawImageOptions{}
 
-			op := &ebiten.DrawImageOptions{}
+				scale := transform.WorldScale(entry)
+				op.GeoM.Scale(scale.X, scale.Y)
 
-			scale := transform.WorldScale(entry)
-			op.GeoM.Scale(scale.X, scale.Y)
+				position := transform.WorldPosition(entry)
+				op.GeoM.Translate(position.X, position.Y)
 
-			position := transform.WorldPosition(entry)
-			op.GeoM.Translate(position.X, position.Y)
-
-			screen.DrawImage(sprite.Image, op)
+				screen.DrawImage(sprite.Image, op)
+			}
 		}
 	}
 }

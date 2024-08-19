@@ -62,6 +62,9 @@ func (anim *AnimationData) Update(elapsedTime time.Duration) {
 }
 
 func (anim *AnimationData) Image() *ebiten.Image {
+	if anim.Length() == 0 {
+		return nil
+	}
 	return anim.Frames[anim.index]
 }
 
