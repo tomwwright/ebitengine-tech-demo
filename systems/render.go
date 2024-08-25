@@ -1,6 +1,7 @@
 package systems
 
 import (
+	"slices"
 	"sort"
 	"techdemo/components"
 	"techdemo/tags"
@@ -37,8 +38,10 @@ func (r *Render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 		entries = append(entries, entry)
 	})
 
+	sortEntriesForRendering(entries)
+
 	byLayer := lo.GroupBy(entries, func(entry *donburi.Entry) int {
-		return int(components.Sprite.Get(entry).Layer)
+		return components.Sprite.Get(entry).Layer
 	})
 	layers := lo.Keys(byLayer)
 	sort.Ints(layers)
@@ -66,6 +69,32 @@ func (r *Render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 				screen.DrawImage(sprite.Image, op)
 			}
 		}
+	}
+}
+
+func sortEntriesForRendering(entries []*donburi.Entry) {
+	slices.SortFunc(entries, func(entryA *donburi.Entry, entryB *donburi.Entry) int {
+		a := transform.WorldPosition(entryA)
+		b := transform.WorldPosition(entryB)
+
+		diff := int(a.Y - b.Y)
+
+		if diff != 0 {
+			return diff
+		}
+
+		return sublayerOrder(entryA) - sublayerOrder(entryB)
+	})
+}
+
+// sublayerOrder returns an int for comparing render order
+// of overlapping objects within a layer
+func sublayerOrder(entry *donburi.Entry) int {
+	// things that don't move sit above things that do
+	if !entry.HasComponent(components.Movement) {
+		return 0
+	} else {
+		return -1
 	}
 }
 

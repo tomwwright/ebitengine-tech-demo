@@ -55,7 +55,7 @@ func (s *TilemapScene) Draw(screen *ebiten.Image) {
 func constructTileSprites(s *TilemapScene) {
 	tilemap := s.Tilemap.Map
 	w := s.ecs.World
-	for _, l := range tilemap.Layers {
+	for li, l := range tilemap.Layers {
 		for i, t := range l.Tiles {
 			if !t.Nil {
 
@@ -72,6 +72,7 @@ func constructTileSprites(s *TilemapScene) {
 				sprite := components.Sprite.Get(entry)
 				gid := t.ID + t.Tileset.FirstGID - 1
 				sprite.Image = s.Tilemap.Tiles[gid]
+				sprite.Layer = li
 			}
 
 		}
@@ -87,6 +88,9 @@ func constructPlayer(s *TilemapScene) {
 	scale := float64(1)
 	transform.LocalPosition = math.NewVec2(16, 16)
 	transform.LocalScale = math.NewVec2(scale, scale)
+
+	sprite := components.Sprite.Get(entry)
+	sprite.Layer = 1
 }
 
 func constructCamera(s *TilemapScene) {
