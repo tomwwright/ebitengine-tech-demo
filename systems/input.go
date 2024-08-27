@@ -2,6 +2,7 @@ package systems
 
 import (
 	"techdemo/components"
+	"techdemo/config"
 	"techdemo/tags"
 	"techdemo/tween"
 
@@ -21,7 +22,7 @@ type Input struct {
 
 func NewInput() *Input {
 	return &Input{
-		query: donburi.NewQuery(filter.Contains(tags.Player, transform.Transform, components.Movement)),
+		query: donburi.NewQuery(filter.Contains(tags.Player, transform.Transform, components.Movement, components.Object)),
 	}
 }
 
@@ -41,10 +42,18 @@ func (input *Input) Update(ecs *ecs.ECS) {
 		return
 	}
 
+	d := float64(config.TileSize / 2)
+	delta := getMovementDelta(direction, d)
+
+	object := components.Object.Get(playerEntry)
+
+	if collision := object.Check(delta.XY()); collision != nil {
+		return
+	}
+
 	transform := components.Transform.Get(playerEntry)
-	d := float64(8) * transform.LocalScale.X
 	from := transform.LocalPosition
-	to := getMovement(from, direction, d)
+	to := from.Add(delta)
 	movement.Tween = tween.NewVec2Tween(from, to, 0.12, ease.Linear)
 }
 
@@ -71,16 +80,16 @@ func getInputDirection() InputDirection {
 	return inputNone
 }
 
-func getMovement(from math.Vec2, direction InputDirection, d float64) math.Vec2 {
+func getMovementDelta(direction InputDirection, d float64) math.Vec2 {
 	switch direction {
 	case inputDirectionUp:
-		return math.NewVec2(from.X, from.Y-d)
+		return math.NewVec2(0, -d)
 	case inputDirectionDown:
-		return math.NewVec2(from.X, from.Y+d)
+		return math.NewVec2(0, d)
 	case inputDirectionLeft:
-		return math.NewVec2(from.X-d, from.Y)
+		return math.NewVec2(-d, 0)
 	case inputDirectionRight:
-		return math.NewVec2(from.X+d, from.Y)
+		return math.NewVec2(d, 0)
 	}
-	return from
+	return math.NewVec2(0, 0)
 }

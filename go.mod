@@ -14,6 +14,7 @@ require (
 	github.com/ebitengine/purego v0.7.0 // indirect
 	github.com/jezek/xgb v1.1.1 // indirect
 	github.com/samber/lo v1.47.0 // indirect
+	github.com/solarlune/resolv v0.7.0 // indirect
 	github.com/tanema/gween v0.0.0-20221212145351-621cc8a459d1 // indirect
 	github.com/yohamta/donburi v1.4.4 // indirect
 	golang.org/x/sync v0.7.0 // indirect

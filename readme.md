@@ -4,7 +4,7 @@
 - [x] Render animated character [done]
 - [x] Camera movement [done]
 - [x] Occlusions [done]
-- [ ] Collisions
+- [x] Collisions [done]
 - [ ] Dialogue
 - [ ] Interactions / state
 - [ ] Lighting
