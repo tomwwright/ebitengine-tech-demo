@@ -15,10 +15,10 @@
    <property name="animationName" value="walkDown"/>
   </properties>
   <animation>
-   <frame tileid="0" duration="200"/>
    <frame tileid="3" duration="200"/>
    <frame tileid="0" duration="200"/>
    <frame tileid="4" duration="200"/>
+   <frame tileid="0" duration="200"/>
   </animation>
  </tile>
  <tile id="6">
@@ -26,10 +26,10 @@
    <property name="animationName" value="walkRight"/>
   </properties>
   <animation>
-   <frame tileid="7" duration="200"/>
    <frame tileid="6" duration="200"/>
    <frame tileid="7" duration="200"/>
    <frame tileid="8" duration="200"/>
+   <frame tileid="7" duration="200"/>
   </animation>
  </tile>
  <tile id="9">
@@ -37,10 +37,10 @@
    <property name="animationName" value="walkLeft"/>
   </properties>
   <animation>
-   <frame tileid="10" duration="200"/>
    <frame tileid="9" duration="200"/>
    <frame tileid="10" duration="200"/>
    <frame tileid="11" duration="200"/>
+   <frame tileid="10" duration="200"/>
   </animation>
  </tile>
  <tile id="12">
@@ -48,10 +48,10 @@
    <property name="animationName" value="walkUp"/>
   </properties>
   <animation>
-   <frame tileid="12" duration="200"/>
    <frame tileid="13" duration="200"/>
    <frame tileid="12" duration="200"/>
    <frame tileid="14" duration="200"/>
+   <frame tileid="12" duration="200"/>
   </animation>
  </tile>
 </tileset>

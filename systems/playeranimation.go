@@ -1,7 +1,6 @@
 package systems
 
 import (
-	"fmt"
 	"techdemo/components"
 	"techdemo/constants"
 	"techdemo/tags"
@@ -55,7 +54,6 @@ func (pa *PlayerAnimation) Update(ecs *ecs.ECS) {
 
 	setAnimationComponent := func(anim tilemap.Animation) {
 		if pa.currentAnimation != anim.Name {
-			fmt.Printf("Setting animation %s\n", anim.Name)
 			components.Animation.Set(playerEntry, &components.AnimationData{
 				Durations: anim.Durations,
 				Frames:    anim.Frames,
@@ -98,6 +96,6 @@ func (pa *PlayerAnimation) Update(ecs *ecs.ECS) {
 
 	// idle animation is special case that should play while not moving
 	if !isMoving && pa.currentAnimation != "idle" {
-		animation.PauseAtStart()
+		animation.PauseAtEnd()
 	}
 }
