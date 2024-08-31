@@ -5,7 +5,7 @@ import (
 	"fmt"
 	_ "image/png"
 	"log"
-	"techdemo/config"
+	"techdemo/constants"
 	"techdemo/scenes"
 
 	"image"
@@ -54,7 +54,7 @@ func (g *Game) Layout(width, height int) (int, int) {
 }
 
 func main() {
-	ebiten.SetWindowSize(config.ScreenWidth, config.ScreenHeight)
+	ebiten.SetWindowSize(constants.ScreenWidth, constants.ScreenHeight)
 	ebiten.SetWindowTitle("Hello, World!")
 	if err := ebiten.RunGame(NewGame()); err != nil {
 		log.Fatal(err)

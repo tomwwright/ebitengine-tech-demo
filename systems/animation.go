@@ -2,7 +2,7 @@ package systems
 
 import (
 	"techdemo/components"
-	"techdemo/config"
+	"techdemo/constants"
 
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
@@ -25,7 +25,7 @@ func NewAnimation() *Animation {
 func (m *Animation) Update(ecs *ecs.ECS) {
 	m.query.Each(ecs.World, func(entry *donburi.Entry) {
 		animation := components.Animation.Get(entry)
-		animation.Update(config.DeltaTimeDuration)
+		animation.Update(constants.DeltaTimeDuration)
 
 		sprite := components.Sprite.Get(entry)
 		if sprite != nil {

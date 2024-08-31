@@ -105,8 +105,6 @@ func (m *Tilemap) loadAnimations() {
 				}
 
 				animations = append(animations, animation)
-
-				fmt.Printf("%+v\n", animation)
 			}
 
 		}

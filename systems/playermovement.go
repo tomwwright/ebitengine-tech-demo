@@ -2,7 +2,7 @@ package systems
 
 import (
 	"techdemo/components"
-	"techdemo/config"
+	"techdemo/constants"
 	"techdemo/events"
 	"techdemo/tags"
 	"techdemo/tween"
@@ -57,7 +57,7 @@ func (m *PlayerMovement) Update(ecs *ecs.ECS) {
 		return
 	}
 
-	d := float64(config.TileSize / 2)
+	d := float64(constants.TileSize / 2)
 	v := toMovementVector(direction)
 	delta := v.MulScalar(d)
 
@@ -91,14 +91,14 @@ func toDirection(input events.Input) Direction {
 func toMovementVector(direction Direction) math.Vec2 {
 	switch direction {
 	case DirectionUp:
-		return math.NewVec2(0, -1)
+		return constants.Up
 	case DirectionDown:
-		return math.NewVec2(0, 1)
+		return constants.Down
 	case DirectionLeft:
-		return math.NewVec2(-1, 0)
+		return constants.Left
 	case DirectionRight:
-		return math.NewVec2(1, 0)
+		return constants.Right
 	default:
-		return math.NewVec2(0, 0)
+		return constants.Zero
 	}
 }

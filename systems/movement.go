@@ -2,7 +2,7 @@ package systems
 
 import (
 	"techdemo/components"
-	"techdemo/config"
+	"techdemo/constants"
 
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
@@ -28,7 +28,8 @@ func (m *Movement) Update(ecs *ecs.ECS) {
 		movement := components.Movement.Get(entry)
 		if movement.Tween != nil {
 			transform := components.Transform.Get(entry)
-			current, isFinished := movement.Tween.Update(config.DeltaTime)
+			current, isFinished := movement.Tween.Update(constants.DeltaTime)
+			movement.LastDirection = current.Sub(transform.LocalPosition).Normalized()
 			transform.LocalPosition = current
 			if isFinished {
 				movement.Tween = nil

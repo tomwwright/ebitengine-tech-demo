@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"image/color"
 	"techdemo/components"
-	"techdemo/config"
+	"techdemo/constants"
 	"techdemo/events"
 	"techdemo/systems"
 	"techdemo/tags"
@@ -73,7 +73,7 @@ func (s *TilemapScene) Draw(screen *ebiten.Image) {
 }
 
 func constructSpace(s *TilemapScene) {
-	s.Space = resolv.NewSpace(s.Tilemap.Map.Width*config.TileSize, s.Tilemap.Map.Height*config.TileSize, config.TileSize, config.TileSize)
+	s.Space = resolv.NewSpace(s.Tilemap.Map.Width*constants.TileSize, s.Tilemap.Map.Height*constants.TileSize, constants.TileSize, constants.TileSize)
 }
 
 func constructTileSprites(s *TilemapScene) {
@@ -101,11 +101,10 @@ func constructTileSprites(s *TilemapScene) {
 				sprite.Layer = li
 
 				if l.Name == LayerObjects {
-					object := components.NewObject(math.NewVec2(0, 0), config.TileSize, config.TileSize)
+					object := components.NewObject(math.NewVec2(0, 0), constants.TileSize, constants.TileSize)
 					s.Space.Add(&object.Object)
 					entry.AddComponent(components.Object)
 					components.Object.Set(entry, object)
-					fmt.Printf("%+v\n", object)
 				}
 			}
 
@@ -126,7 +125,7 @@ func constructPlayer(s *TilemapScene) {
 	sprite := components.Sprite.Get(entry)
 	sprite.Layer = 1
 
-	object := components.NewObject(math.NewVec2(0, 8), config.TileSize, config.TileSize/2) // player has collider on lower half of tile only
+	object := components.NewObject(math.NewVec2(0, 8), constants.TileSize, constants.TileSize/2) // player has collider on lower half of tile only
 	s.Space.Add(&object.Object)
 	components.Object.Set(entry, object)
 }
