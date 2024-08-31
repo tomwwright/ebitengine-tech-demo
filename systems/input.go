@@ -1,95 +1,63 @@
 package systems
 
 import (
-	"techdemo/components"
-	"techdemo/config"
-	"techdemo/tags"
-	"techdemo/tween"
+	"techdemo/events"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/tanema/gween/ease"
-	"github.com/yohamta/donburi"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/samber/lo"
 	"github.com/yohamta/donburi/ecs"
-	"github.com/yohamta/donburi/features/math"
-	"github.com/yohamta/donburi/features/transform"
-	"github.com/yohamta/donburi/filter"
-	"github.com/yohamta/donburi/query"
 )
 
 type Input struct {
-	query *query.Query
+	activeInputs []events.Input
 }
 
 func NewInput() *Input {
-	return &Input{
-		query: donburi.NewQuery(filter.Contains(tags.Player, transform.Transform, components.Movement, components.Object)),
-	}
+	return &Input{}
 }
 
 func (input *Input) Update(ecs *ecs.ECS) {
-	playerEntry, ok := input.query.First(ecs.World)
-	if !ok {
-		return
+	w := ecs.World
+	pressed, active, released := getInputs()
+
+	for _, e := range pressed {
+		events.InputEvent.Publish(w, e)
 	}
 
-	movement := components.Movement.Get(playerEntry)
-	if movement.Tween != nil {
-		return
+	if isMovementReleased(active, released) {
+		events.InputEvent.Publish(w, events.InputMoveNone)
 	}
-
-	direction := getInputDirection()
-	if direction == inputNone {
-		return
-	}
-
-	d := float64(config.TileSize / 2)
-	delta := getMovementDelta(direction, d)
-
-	object := components.Object.Get(playerEntry)
-
-	if collision := object.Check(delta.XY()); collision != nil {
-		return
-	}
-
-	transform := components.Transform.Get(playerEntry)
-	from := transform.LocalPosition
-	to := from.Add(delta)
-	movement.Tween = tween.NewVec2Tween(from, to, 0.12, ease.Linear)
 }
 
-type InputDirection int
-
-const (
-	inputNone InputDirection = iota
-	inputDirectionUp
-	inputDirectionDown
-	inputDirectionLeft
-	inputDirectionRight
-)
-
-func getInputDirection() InputDirection {
-	if ebiten.IsKeyPressed(ebiten.KeyRight) {
-		return inputDirectionRight
-	} else if ebiten.IsKeyPressed(ebiten.KeyLeft) {
-		return inputDirectionLeft
-	} else if ebiten.IsKeyPressed(ebiten.KeyUp) {
-		return inputDirectionUp
-	} else if ebiten.IsKeyPressed(ebiten.KeyDown) {
-		return inputDirectionDown
-	}
-	return inputNone
+// isMovementReleased returns true when active contains no movement inputs
+// and released contains at least one movement input
+func isMovementReleased(active []events.Input, released []events.Input) bool {
+	activeMovements := lo.Intersect(movementInputs, active)
+	releasedMovements := lo.Intersect(movementInputs, released)
+	return len(activeMovements) == 0 && len(releasedMovements) > 0
 }
 
-func getMovementDelta(direction InputDirection, d float64) math.Vec2 {
-	switch direction {
-	case inputDirectionUp:
-		return math.NewVec2(0, -d)
-	case inputDirectionDown:
-		return math.NewVec2(0, d)
-	case inputDirectionLeft:
-		return math.NewVec2(-d, 0)
-	case inputDirectionRight:
-		return math.NewVec2(d, 0)
+func getInputs() (pressed []events.Input, active []events.Input, released []events.Input) {
+
+	for input, key := range inputToKeyMapping {
+		if inpututil.IsKeyJustPressed(key) {
+			pressed = append(pressed, input)
+		} else if ebiten.IsKeyPressed(key) {
+			active = append(active, input)
+		} else if inpututil.IsKeyJustReleased(key) {
+			released = append(released, input)
+		}
 	}
-	return math.NewVec2(0, 0)
+
+	return pressed, active, released
+}
+
+var movementInputs = []events.Input{events.InputMoveUp, events.InputMoveDown, events.InputMoveLeft, events.InputMoveRight}
+
+var inputToKeyMapping = map[events.Input]ebiten.Key{
+	events.InputMoveUp:    ebiten.KeyUp,
+	events.InputMoveDown:  ebiten.KeyDown,
+	events.InputMoveLeft:  ebiten.KeyLeft,
+	events.InputMoveRight: ebiten.KeyRight,
 }

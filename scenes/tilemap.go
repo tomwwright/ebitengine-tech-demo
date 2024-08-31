@@ -5,6 +5,7 @@ import (
 	"image/color"
 	"techdemo/components"
 	"techdemo/config"
+	"techdemo/events"
 	"techdemo/systems"
 	"techdemo/tags"
 	"techdemo/tilemap"
@@ -35,9 +36,21 @@ func NewTilemapScene(filename string) (*TilemapScene, error) {
 		ecs:     ecs.NewECS(donburi.NewWorld()),
 		Tilemap: tilemap,
 	}
+
+	playerMovement := systems.NewPlayerMovement()
+
+	debugInputEvents := func(w donburi.World, event events.Input) {
+		fmt.Printf("InputEvent: %+v\n", event)
+	}
+
+	events.InputEvent.Subscribe(scene.ecs.World, debugInputEvents)
+	events.InputEvent.Subscribe(scene.ecs.World, playerMovement.OnInputEvent)
+
 	scene.ecs.AddSystem(systems.NewAnimation().Update)
 	scene.ecs.AddSystem(systems.NewMovement().Update)
 	scene.ecs.AddSystem(systems.NewInput().Update)
+	scene.ecs.AddSystem(systems.ProcessEvents)
+	scene.ecs.AddSystem(playerMovement.Update)
 	scene.ecs.AddSystem(systems.NewPlayerAnimation(tilemap).Update)
 	scene.ecs.AddSystem(systems.UpdateObjects)
 	scene.ecs.AddRenderer(ecs.LayerDefault, systems.NewRender().Draw)
