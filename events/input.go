@@ -10,6 +10,7 @@ const (
 	InputMoveDown  Input = "InputMoveDown"
 	InputMoveLeft  Input = "InputMoveLeft"
 	InputMoveRight Input = "InputMoveRight"
+	InputInteract  Input = "InputInteract"
 )
 
 var InputEvent = events.NewEventType[Input]()
