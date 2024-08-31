@@ -63,14 +63,16 @@ func (m *PlayerMovement) Update(ecs *ecs.ECS) {
 
 	object := components.Object.Get(playerEntry)
 
-	if collision := object.Check(delta.XY()); collision != nil {
-		return
+	if collision := object.Check(delta.XY()); collision == nil {
+		transform := components.Transform.Get(playerEntry)
+		from := transform.LocalPosition
+		to := from.Add(delta)
+		movement.Tween = tween.NewVec2Tween(from, to, 0.12, ease.Linear)
+	} else {
+		// if there is collision, only set direction
+		movement.LastDirection = v
 	}
 
-	transform := components.Transform.Get(playerEntry)
-	from := transform.LocalPosition
-	to := from.Add(delta)
-	movement.Tween = tween.NewVec2Tween(from, to, 0.12, ease.Linear)
 }
 
 func toDirection(input events.Input) Direction {
