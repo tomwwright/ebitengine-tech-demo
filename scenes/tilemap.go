@@ -45,6 +45,7 @@ func NewTilemapScene(filename string) (*TilemapScene, error) {
 
 	events.InputEvent.Subscribe(scene.ecs.World, debugInputEvents)
 	events.InputEvent.Subscribe(scene.ecs.World, playerMovement.OnInputEvent)
+	events.InputEvent.Subscribe(scene.ecs.World, systems.OnInteractEvent)
 
 	scene.ecs.AddSystem(systems.NewAnimation().Update)
 	scene.ecs.AddSystem(systems.NewMovement().Update)
@@ -57,6 +58,7 @@ func NewTilemapScene(filename string) (*TilemapScene, error) {
 
 	constructSpace(scene)
 	constructTileSprites(scene)
+	constructObjects(scene)
 	constructPlayer(scene)
 	constructCamera(scene)
 
@@ -101,13 +103,34 @@ func constructTileSprites(s *TilemapScene) {
 				sprite.Layer = li
 
 				if l.Name == LayerObjects {
-					object := components.NewObject(math.NewVec2(0, 0), constants.TileSize, constants.TileSize)
+					object := components.NewObject(entry, constants.Zero, constants.TileSize, constants.TileSize)
 					s.Space.Add(&object.Object)
 					entry.AddComponent(components.Object)
 					components.Object.Set(entry, object)
 				}
 			}
 
+		}
+	}
+}
+
+func constructObjects(s *TilemapScene) {
+	tilemap := s.Tilemap.Map
+	w := s.ecs.World
+	for _, group := range tilemap.ObjectGroups {
+		for _, o := range group.Objects {
+			entity := w.Create(components.Transform, components.Object, components.Interaction)
+			entry := w.Entry(entity)
+
+			transform := components.Transform.Get(entry)
+			transform.LocalPosition = math.NewVec2(o.X, o.Y)
+
+			object := components.NewObject(entry, constants.Zero, o.Width, o.Height, tags.ResolvTagInteractive)
+			s.Space.Add(&object.Object)
+			components.Object.Set(entry, object)
+
+			interaction := components.Interaction.Get(entry)
+			interaction.Payload = o.Name
 		}
 	}
 }
@@ -125,7 +148,7 @@ func constructPlayer(s *TilemapScene) {
 	sprite := components.Sprite.Get(entry)
 	sprite.Layer = 1
 
-	object := components.NewObject(math.NewVec2(0, 8), constants.TileSize, constants.TileSize/2) // player has collider on lower half of tile only
+	object := components.NewObject(entry, math.NewVec2(0, 8), constants.TileSize, constants.TileSize/2) // player has collider on lower half of tile only
 	s.Space.Add(&object.Object)
 	components.Object.Set(entry, object)
 }

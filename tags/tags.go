@@ -6,3 +6,5 @@ var (
 	Player = donburi.NewTag().SetName("Player")
 	Camera = donburi.NewTag().SetName("Camera")
 )
+
+const ResolvTagInteractive = "Interactive"
