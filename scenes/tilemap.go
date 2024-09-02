@@ -10,7 +10,9 @@ import (
 	"techdemo/tags"
 	"techdemo/tilemap"
 
+	"github.com/hajimehoshi/bitmapfont/v3"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/solarlune/resolv"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
@@ -72,6 +74,12 @@ func (s *TilemapScene) Update() {
 func (s *TilemapScene) Draw(screen *ebiten.Image) {
 	screen.Fill(color.RGBA{20, 20, 40, 255})
 	s.ecs.Draw(screen)
+
+	font := text.NewGoXFace(bitmapfont.Face)
+	op := text.DrawOptions{}
+	op.GeoM.Scale(2, 2)
+	op.GeoM.Translate(8, 8)
+	text.Draw(screen, "Hello, World!", font, &op)
 }
 
 func constructSpace(s *TilemapScene) {
