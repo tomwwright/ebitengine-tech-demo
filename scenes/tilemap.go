@@ -55,6 +55,7 @@ func NewTilemapScene(filename string) (*TilemapScene, error) {
 	scene.ecs.AddSystem(systems.ProcessEvents)
 	scene.ecs.AddSystem(playerMovement.Update)
 	scene.ecs.AddSystem(systems.NewPlayerAnimation(tilemap).Update)
+	scene.ecs.AddSystem(systems.NewTextAnimation().Update)
 	scene.ecs.AddSystem(systems.UpdateObjects)
 	scene.ecs.AddRenderer(ecs.LayerDefault, systems.NewRender().Draw)
 
@@ -63,6 +64,7 @@ func NewTilemapScene(filename string) (*TilemapScene, error) {
 	constructObjects(scene)
 	constructPlayer(scene)
 	constructCamera(scene)
+	constructText(scene)
 
 	return scene, nil
 }
@@ -75,11 +77,37 @@ func (s *TilemapScene) Draw(screen *ebiten.Image) {
 	screen.Fill(color.RGBA{20, 20, 40, 255})
 	s.ecs.Draw(screen)
 
+}
+
+func constructText(s *TilemapScene) {
 	font := text.NewGoXFace(bitmapfont.Face)
-	op := text.DrawOptions{}
-	op.GeoM.Scale(2, 2)
-	op.GeoM.Translate(8, 8)
-	text.Draw(screen, "Hello, World!", font, &op)
+
+	w := s.ecs.World
+	entity := w.Create(components.Transform, components.Text, components.TextAnimation)
+	entry := w.Entry(entity)
+
+	t := components.Transform.Get(entry)
+	t.LocalPosition = math.NewVec2(64, 64)
+	components.Text.Set(entry, &components.TextData{
+		Font: font,
+		Text: "",
+	})
+	components.TextAnimation.Set(entry, &components.TextAnimationData{
+		Text:  "hello, world!",
+		Speed: 1,
+	})
+
+	entity = w.Create(components.Transform, components.Text)
+	entry = w.Entry(entity)
+
+	t = components.Transform.Get(entry)
+	t.LocalPosition = math.NewVec2(32, 64)
+	components.Text.Set(entry, &components.TextData{
+		Font: font,
+		Text: "im following the camera...",
+	})
+
+	transform.AppendChild(tags.Player.MustFirst(w), entry, false)
 }
 
 func constructSpace(s *TilemapScene) {

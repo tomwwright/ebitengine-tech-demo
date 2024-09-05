@@ -7,6 +7,7 @@ import (
 	"techdemo/tags"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/samber/lo"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
@@ -17,13 +18,17 @@ import (
 )
 
 type Render struct {
-	query *query.Query
+	sprites *query.Query
+	texts   *query.Query
 }
 
 func NewRender() *Render {
 	return &Render{
-		query: query.NewQuery(
+		sprites: query.NewQuery(
 			filter.Contains(transform.Transform, components.Sprite),
+		),
+		texts: query.NewQuery(
+			filter.Contains(transform.Transform, components.Text),
 		),
 	}
 }
@@ -34,7 +39,7 @@ func (r *Render) Update(ecs *ecs.ECS) {
 
 func (r *Render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 	var entries []*donburi.Entry
-	r.query.Each(ecs.World, func(entry *donburi.Entry) {
+	r.sprites.Each(ecs.World, func(entry *donburi.Entry) {
 		entries = append(entries, entry)
 	})
 
@@ -70,6 +75,22 @@ func (r *Render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 			}
 		}
 	}
+
+	r.texts.Each(ecs.World, func(entry *donburi.Entry) {
+		op := &text.DrawOptions{}
+
+		t := components.Text.Get(entry)
+
+		scale := transform.WorldScale(entry)
+		op.GeoM.Scale(scale.X, scale.Y)
+
+		position := transform.WorldPosition(entry)
+		op.GeoM.Translate(position.X, position.Y)
+
+		op.GeoM.Concat(cameraMatrix)
+
+		text.Draw(screen, t.Text, t.Font, op)
+	})
 }
 
 func sortEntriesForRendering(entries []*donburi.Entry) {
