@@ -26,8 +26,9 @@ func (m *TextAnimation) Update(ecs *ecs.ECS) {
 	m.query.Each(ecs.World, func(entry *donburi.Entry) {
 		animation := components.TextAnimation.Get(entry)
 		text := components.Text.Get(entry)
+
 		if !animation.IsFinished() {
-			animation.Characters += animation.Speed * constants.DeltaTime
+			animation.Update(constants.DeltaTime)
 
 			length := int(animation.Characters) - 1
 			if length >= 0 {

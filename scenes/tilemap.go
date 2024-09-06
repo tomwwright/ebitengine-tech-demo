@@ -10,9 +10,7 @@ import (
 	"techdemo/tags"
 	"techdemo/tilemap"
 
-	"github.com/hajimehoshi/bitmapfont/v3"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/solarlune/resolv"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
@@ -39,6 +37,7 @@ func NewTilemapScene(filename string) (*TilemapScene, error) {
 		Tilemap: tilemap,
 	}
 
+	dialogue := systems.NewDialogue()
 	playerMovement := systems.NewPlayerMovement()
 
 	debugInputEvents := func(w donburi.World, event events.Input) {
@@ -48,6 +47,9 @@ func NewTilemapScene(filename string) (*TilemapScene, error) {
 	events.InputEvent.Subscribe(scene.ecs.World, debugInputEvents)
 	events.InputEvent.Subscribe(scene.ecs.World, playerMovement.OnInputEvent)
 	events.InputEvent.Subscribe(scene.ecs.World, systems.OnInteractEvent)
+	events.InputEvent.Subscribe(scene.ecs.World, dialogue.OnInteractEvent)
+
+	events.DialogueEvent.Subscribe(scene.ecs.World, dialogue.OnDialogueEvent)
 
 	scene.ecs.AddSystem(systems.NewAnimation().Update)
 	scene.ecs.AddSystem(systems.NewMovement().Update)
@@ -63,8 +65,8 @@ func NewTilemapScene(filename string) (*TilemapScene, error) {
 	constructTileSprites(scene)
 	constructObjects(scene)
 	constructPlayer(scene)
+	constructScreenContainer(scene)
 	constructCamera(scene)
-	constructText(scene)
 
 	return scene, nil
 }
@@ -76,38 +78,6 @@ func (s *TilemapScene) Update() {
 func (s *TilemapScene) Draw(screen *ebiten.Image) {
 	screen.Fill(color.RGBA{20, 20, 40, 255})
 	s.ecs.Draw(screen)
-
-}
-
-func constructText(s *TilemapScene) {
-	font := text.NewGoXFace(bitmapfont.Face)
-
-	w := s.ecs.World
-	entity := w.Create(components.Transform, components.Text, components.TextAnimation)
-	entry := w.Entry(entity)
-
-	t := components.Transform.Get(entry)
-	t.LocalPosition = math.NewVec2(64, 64)
-	components.Text.Set(entry, &components.TextData{
-		Font: font,
-		Text: "",
-	})
-	components.TextAnimation.Set(entry, &components.TextAnimationData{
-		Text:  "hello, world!",
-		Speed: 1,
-	})
-
-	entity = w.Create(components.Transform, components.Text)
-	entry = w.Entry(entity)
-
-	t = components.Transform.Get(entry)
-	t.LocalPosition = math.NewVec2(32, 64)
-	components.Text.Set(entry, &components.TextData{
-		Font: font,
-		Text: "im following the camera...",
-	})
-
-	transform.AppendChild(tags.Player.MustFirst(w), entry, false)
 }
 
 func constructSpace(s *TilemapScene) {
@@ -189,17 +159,27 @@ func constructPlayer(s *TilemapScene) {
 	components.Object.Set(entry, object)
 }
 
+func constructScreenContainer(s *TilemapScene) {
+	w := s.ecs.World
+	entity := w.Create(tags.ScreenContainer, components.Transform)
+	entry := w.Entry(entity)
+
+	t := components.Transform.Get(entry)
+	t.LocalPosition = math.NewVec2(0, 0)
+
+	transform.AppendChild(tags.Player.MustFirst(w), entry, true)
+}
+
 func constructCamera(s *TilemapScene) {
 	w := s.ecs.World
 	entity := w.Create(tags.Camera, components.Transform, components.Movement)
 	entry := w.Entry(entity)
 
 	t := components.Transform.Get(entry)
-	scale := float64(2)
-	t.LocalPosition = math.NewVec2(-16, -16)
+	scale := float64(constants.Scale)
+	t.LocalPosition = math.NewVec2(0, 0)
 	t.LocalScale = math.NewVec2(scale, scale)
 	t.LocalRotation = 0
 
-	playerEntry := tags.Player.MustFirst(w)
-	transform.AppendChild(playerEntry, entry, false)
+	transform.AppendChild(tags.ScreenContainer.MustFirst(w), entry, false)
 }

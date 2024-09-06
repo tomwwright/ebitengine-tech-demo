@@ -13,6 +13,7 @@ const (
 	Scale             = 2
 	DeltaTime         = 1.0 / 60.0
 	DeltaTimeDuration = time.Second / 60.0
+	LayerUI           = 8
 )
 
 var Up = math.NewVec2(0, -1)
