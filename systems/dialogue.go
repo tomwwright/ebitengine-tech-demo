@@ -41,7 +41,16 @@ func (d *Dialogue) OnDialogueEvent(w donburi.World, event events.Dialogue) {
 		return
 	}
 
+	d.SetDialogue(w, event.Text)
+}
+
+func (d *Dialogue) SetDialogue(w donburi.World, text string) {
+	if d.current != nil {
+		d.closeCurrent()
+	}
+
 	// backdrop
+
 	entity := w.Create(components.Transform, components.Sprite)
 	backdrop := w.Entry(entity)
 
@@ -67,7 +76,7 @@ func (d *Dialogue) OnDialogueEvent(w donburi.World, event events.Dialogue) {
 	})
 	components.TextAnimation.Set(entry, &components.TextAnimationData{
 		Speed: DialogueSpeed,
-		Text:  event.Text,
+		Text:  text,
 	})
 
 	transform.AppendChild(backdrop, entry, false)
