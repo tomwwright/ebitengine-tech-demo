@@ -42,6 +42,7 @@ func (d *Dialogue) OnDialogueEvent(w donburi.World, event events.Dialogue) {
 	}
 
 	d.SetDialogue(w, event.Text)
+	events.StateChangeEvent.Publish(w, events.DialogueOpened)
 }
 
 func (d *Dialogue) SetDialogue(w donburi.World, text string) {
@@ -95,6 +96,7 @@ func (d *Dialogue) OnInteractEvent(w donburi.World, event events.Input) {
 	animation := components.TextAnimation.Get(d.current.text)
 	if animation.IsFinished() {
 		d.closeCurrent()
+		events.StateChangeEvent.Publish(w, events.DialogueClosed)
 	} else {
 		animation.Skip()
 	}

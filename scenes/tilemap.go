@@ -40,6 +40,16 @@ func NewTilemapScene(filename string) (*TilemapScene, error) {
 	dialogue := systems.NewDialogue()
 	playerMovement := systems.NewPlayerMovement()
 
+	inputEventsSubscriberManager := &InputEventsSubscriberManager{
+		Subscribers: []InputEventsSubscriber{
+			playerMovement.OnInputEvent,
+			systems.OnInteractEvent,
+		},
+		DialogueStateSubscribers: []InputEventsSubscriber{
+			dialogue.OnInteractEvent,
+		},
+	}
+
 	debugInputEvents := func(w donburi.World, event events.Input) {
 		fmt.Printf("InputEvent: %+v\n", event)
 	}
@@ -49,6 +59,7 @@ func NewTilemapScene(filename string) (*TilemapScene, error) {
 	events.InputEvent.Subscribe(scene.ecs.World, systems.OnInteractEvent)
 	events.InputEvent.Subscribe(scene.ecs.World, dialogue.OnInteractEvent)
 
+	events.StateChangeEvent.Subscribe(scene.ecs.World, inputEventsSubscriberManager.OnStateChange)
 	events.DialogueEvent.Subscribe(scene.ecs.World, dialogue.OnDialogueEvent)
 
 	scene.ecs.AddSystem(systems.NewAnimation().Update)
