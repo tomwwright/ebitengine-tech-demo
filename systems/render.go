@@ -17,6 +17,8 @@ import (
 	"github.com/yohamta/donburi/query"
 )
 
+const LineSpacing = 16
+
 type Render struct {
 	sprites *query.Query
 	texts   *query.Query
@@ -77,7 +79,11 @@ func (r *Render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 	}
 
 	r.texts.Each(ecs.World, func(entry *donburi.Entry) {
-		op := &text.DrawOptions{}
+		op := &text.DrawOptions{
+			LayoutOptions: text.LayoutOptions{
+				LineSpacing: LineSpacing,
+			},
+		}
 
 		t := components.Text.Get(entry)
 

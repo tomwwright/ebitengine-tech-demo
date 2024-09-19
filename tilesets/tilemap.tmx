@@ -76,7 +76,15 @@
 </data>
  </layer>
  <objectgroup id="6" name="Interactives">
-  <object id="3" name="mushroom" x="192" y="32" width="16" height="16"/>
-  <object id="4" name="sign" x="264" y="120" width="16" height="16"/>
+  <object id="3" name="mushroom" x="192" y="32" width="16" height="16">
+   <properties>
+    <property name="dialogue" value="Two colourful little mushrooms. Delicious? Or deadly?"/>
+   </properties>
+  </object>
+  <object id="4" name="sign" x="264" y="120" width="16" height="16">
+   <properties>
+    <property name="dialogue" value="Welcome to Sunny Valley! If you're a newcomer, that is. Otherwise, good day I suppose..."/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

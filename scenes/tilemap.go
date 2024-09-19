@@ -147,7 +147,7 @@ func constructObjects(s *TilemapScene) {
 			components.Object.Set(entry, object)
 
 			interaction := components.Interaction.Get(entry)
-			interaction.Payload = o.Name
+			interaction.Payload = o.Properties.GetString("dialogue")
 		}
 	}
 }

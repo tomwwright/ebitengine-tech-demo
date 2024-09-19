@@ -2,6 +2,7 @@ package systems
 
 import (
 	"image/color"
+	"strings"
 	"techdemo/components"
 	"techdemo/constants"
 	"techdemo/events"
@@ -15,7 +16,8 @@ import (
 	"github.com/yohamta/donburi/features/transform"
 )
 
-const DialogueSpeed = 8.0
+const DialogueSpeed = 12.0
+const DialogueMaxLineLength = 48
 
 type Dialogue struct {
 	backdrop *ebiten.Image
@@ -41,7 +43,8 @@ func (d *Dialogue) OnDialogueEvent(w donburi.World, event events.Dialogue) {
 		return
 	}
 
-	d.SetDialogue(w, event.Text)
+	text := insertLineBreaks(event.Text)
+	d.SetDialogue(w, text)
 	events.StateChangeEvent.Publish(w, events.DialogueOpened)
 }
 
@@ -118,4 +121,24 @@ func createDialogueBackdrop() *ebiten.Image {
 	img := ebiten.NewImage(w, h)
 	img.Fill(color.RGBA{0, 0, 0, 100})
 	return img
+}
+
+func insertLineBreaks(text string) string {
+	words := strings.Split(text, " ")
+	if len(words) < 2 {
+		return text
+	}
+
+	text = words[0]
+	length := len(text)
+	for _, w := range words[1:] {
+		length += len(w) + 1 // for space
+		if length <= DialogueMaxLineLength {
+			text += " " + w
+		} else {
+			text += "\n" + w
+			length = len(w)
+		}
+	}
+	return text
 }
