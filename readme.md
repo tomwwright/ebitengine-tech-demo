@@ -5,7 +5,8 @@
 - [x] Camera movement [done]
 - [x] Occlusions [done]
 - [x] Collisions [done]
-- [ ] Dialogue
+- [x] Dialogue [done]
 - [ ] Interactions / state
-- [ ] Lighting
+  - [ ] State: Interact with object, despawn, update state so that interaction with character yields different dialogue
+  - [ ] Sequence: Interact with character, they walk to another location, interact again and they walk back
 - [ ] Web hosting
