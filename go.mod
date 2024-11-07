@@ -21,6 +21,7 @@ require (
 	github.com/go-text/typesetting v0.1.1-0.20240325125605-c7936fe59984 // indirect
 	github.com/jezek/xgb v1.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/stretchr/objx v0.5.0 // indirect
 	golang.org/x/image v0.18.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/sys v0.22.0 // indirect
