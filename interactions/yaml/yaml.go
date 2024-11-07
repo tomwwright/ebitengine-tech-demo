@@ -8,11 +8,16 @@ type Interactions struct {
 
 type Interaction struct {
 	Debug    *Debug    `yaml:"debug"`
+	Despawn  *Despawn  `yaml:"despawn"`
 	Dialogue *Dialogue `yaml:"dialogue"`
 }
 
 type Debug struct {
 	Text string `yaml:"text"`
+}
+
+type Despawn struct {
+	Name string `yaml:"name"`
 }
 
 type Dialogue struct {

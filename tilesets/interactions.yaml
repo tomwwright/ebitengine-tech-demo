@@ -9,4 +9,11 @@ interactions:
         text: Welcome to Sunny Valley! If you're a newcomer, that is. Otherwise, good day I suppose...
     - dialogue:
         text: Thanks...?
+  coin:
+    - dialogue:
+        text: Hey, there is a shiny coin here in the grass!
+    - despawn:
+        name: coin
+    - dialogue:
+        text: Nice!
   

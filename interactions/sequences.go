@@ -30,6 +30,11 @@ func constructSequence(w donburi.World, interactions *yaml.Interactions, name st
 				Text:  s.Dialogue.Text,
 				World: w,
 			}
+		} else if s.Despawn != nil {
+			step = &steps.DespawnStep{
+				Name:  s.Despawn.Name,
+				World: w,
+			}
 		} else {
 			fmt.Printf("Unknown step in %s: %+v\n", name, s)
 		}
