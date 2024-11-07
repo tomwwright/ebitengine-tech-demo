@@ -6,6 +6,7 @@ import (
 	"image"
 	"os"
 	"path/filepath"
+	"techdemo/interactions/yaml"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -14,11 +15,12 @@ import (
 )
 
 type Tilemap struct {
-	Map        *tiled.Map
-	Filename   string
-	Tiles      map[uint32]*ebiten.Image
-	Tilesets   map[string]*ebiten.Image
-	Animations []Animation
+	Map          *tiled.Map
+	Filename     string
+	Tiles        map[uint32]*ebiten.Image
+	Tilesets     map[string]*ebiten.Image
+	Animations   []Animation
+	Interactions *yaml.Interactions
 }
 
 func LoadTilemap(filename string) (*Tilemap, error) {
@@ -31,6 +33,11 @@ func LoadTilemap(filename string) (*Tilemap, error) {
 	}
 
 	err = m.loadTilesets()
+	if err != nil {
+		return nil, err
+	}
+
+	err = m.loadInteractions()
 	if err != nil {
 		return nil, err
 	}
@@ -75,6 +82,22 @@ func (m *Tilemap) loadTilesets() error {
 			m.Tiles[gid] = ebiten.NewImageFromImage(tilesetImage.SubImage(rect))
 		}
 	}
+	return nil
+}
+
+func (m *Tilemap) loadInteractions() error {
+	filename := m.Map.Properties.Get("interactionsFilename")[0]
+	dir := filepath.Dir(m.Filename)
+	filepath := filepath.Join(dir, filename)
+	content, err := os.ReadFile(filepath)
+	if err != nil {
+		return fmt.Errorf("failed to load interactions from %s: %w", filepath, err)
+	}
+	interactions, err := yaml.UnmarshallInteractions(content)
+	if err != nil {
+		return err
+	}
+	m.Interactions = interactions
 	return nil
 }
 

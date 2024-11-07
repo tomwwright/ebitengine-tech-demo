@@ -2,7 +2,7 @@ package interactions
 
 import (
 	"techdemo/events"
-	"techdemo/interactions/internal/steps"
+	"techdemo/interactions/yaml"
 	"techdemo/sequences"
 
 	"github.com/yohamta/donburi"
@@ -10,6 +10,7 @@ import (
 
 type Director struct {
 	RunnableManager sequences.RunnableManager
+	Interactions    *yaml.Interactions
 }
 
 func NewDirector() *Director {
@@ -18,22 +19,11 @@ func NewDirector() *Director {
 	}
 }
 
-func (d *Director) OnInteractionEvent(w donburi.World, event events.Interaction) {
-	sequence := &sequences.Sequence{
-		Steps: []sequences.Runnable{
-			&steps.DebugStep{
-				Text: event.Name,
-			},
-			&steps.DialogueStep{
-				Text:  event.Name,
-				World: w,
-			},
-			&steps.DialogueStep{
-				Text:  "More lembas bread?",
-				World: w,
-			},
-		},
-	}
+func (d *Director) SetInteractions(i *yaml.Interactions) {
+	d.Interactions = i
+}
 
+func (d *Director) OnInteractionEvent(w donburi.World, event events.Interaction) {
+	sequence := constructSequence(w, d.Interactions, event.Name)
 	d.RunnableManager.Start(sequence)
 }

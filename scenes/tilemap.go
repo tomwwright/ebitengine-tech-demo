@@ -46,6 +46,7 @@ func NewTilemapScene(filename string) (*TilemapScene, error) {
 	}
 
 	director := interactions.NewDirector()
+	director.SetInteractions(tilemap.Interactions)
 
 	director.RunnableManager.OnStart = func() {
 		events.InputEvent.Unsubscribe(scene.ecs.World, playerMovement.OnInputEvent)

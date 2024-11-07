@@ -1,0 +1,12 @@
+interactions:
+  mushroom:
+    - dialogue:
+        text: Two colourful little mushrooms. Delicious? Or deadly?
+  sign:
+    - debug:
+        text: Debugging...
+    - dialogue:
+        text: Welcome to Sunny Valley! If you're a newcomer, that is. Otherwise, good day I suppose...
+    - dialogue:
+        text: Thanks...?
+  
