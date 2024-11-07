@@ -6,6 +6,7 @@ import (
 	"techdemo/components"
 	"techdemo/constants"
 	"techdemo/events"
+	"techdemo/interactions"
 	"techdemo/systems"
 	"techdemo/tags"
 	"techdemo/tilemap"
@@ -40,18 +41,20 @@ func NewTilemapScene(filename string) (*TilemapScene, error) {
 	dialogue := systems.NewDialogue()
 	playerMovement := systems.NewPlayerMovement()
 
-	inputEventsSubscriberManager := &InputEventsSubscriberManager{
-		Subscribers: []InputEventsSubscriber{
-			playerMovement.OnInputEvent,
-			systems.OnInteractEvent,
-		},
-		DialogueStateSubscribers: []InputEventsSubscriber{
-			dialogue.OnInteractEvent,
-		},
-	}
-
 	debugInputEvents := func(w donburi.World, event events.Input) {
 		fmt.Printf("InputEvent: %+v\n", event)
+	}
+
+	director := interactions.NewDirector()
+
+	director.RunnableManager.OnStart = func() {
+		events.InputEvent.Unsubscribe(scene.ecs.World, playerMovement.OnInputEvent)
+		events.InputEvent.Unsubscribe(scene.ecs.World, systems.OnInteractEvent)
+
+	}
+	director.RunnableManager.OnFinish = func() {
+		events.InputEvent.Subscribe(scene.ecs.World, playerMovement.OnInputEvent)
+		events.InputEvent.Subscribe(scene.ecs.World, systems.OnInteractEvent)
 	}
 
 	events.InputEvent.Subscribe(scene.ecs.World, debugInputEvents)
@@ -59,8 +62,7 @@ func NewTilemapScene(filename string) (*TilemapScene, error) {
 	events.InputEvent.Subscribe(scene.ecs.World, systems.OnInteractEvent)
 	events.InputEvent.Subscribe(scene.ecs.World, dialogue.OnInteractEvent)
 
-	events.StateChangeEvent.Subscribe(scene.ecs.World, inputEventsSubscriberManager.OnStateChange)
-	events.DialogueEvent.Subscribe(scene.ecs.World, dialogue.OnDialogueEvent)
+	events.InteractionEvent.Subscribe(scene.ecs.World, director.OnInteractionEvent)
 
 	scene.ecs.AddSystem(systems.NewAnimation().Update)
 	scene.ecs.AddSystem(systems.NewMovement().Update)
@@ -147,7 +149,7 @@ func constructObjects(s *TilemapScene) {
 			components.Object.Set(entry, object)
 
 			interaction := components.Interaction.Get(entry)
-			interaction.Payload = o.Properties.GetString("dialogue")
+			interaction.Name = o.Name
 		}
 	}
 }

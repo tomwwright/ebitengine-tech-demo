@@ -35,8 +35,8 @@ func OnInteractEvent(w donburi.World, input events.Input) {
 
 			if entry.HasComponent(components.Interaction) {
 				interaction := components.Interaction.Get(entry)
-				events.DialogueEvent.Publish(w, events.Dialogue{
-					Text: interaction.Payload,
+				events.InteractionEvent.Publish(w, events.Interaction{
+					Name: interaction.Name,
 				})
 				fmt.Printf("Interaction %+v\n", interaction)
 			}

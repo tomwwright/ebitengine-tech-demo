@@ -5,7 +5,7 @@ import (
 )
 
 type InteractionData struct {
-	Payload string
+	Name string
 }
 
 var Interaction = donburi.NewComponentType[InteractionData]()
