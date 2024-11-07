@@ -23,7 +23,8 @@ func constructSequence(w donburi.World, interactions *yaml.Interactions, name st
 		var step sequences.Runnable
 		if s.Debug != nil {
 			step = &steps.DebugStep{
-				Text: fmt.Sprintf("%s: %s", name, s.Debug.Text),
+				Text:  fmt.Sprintf("%s: %s", name, s.Debug.Text),
+				World: w,
 			}
 		} else if s.Dialogue != nil {
 			step = &steps.DialogueStep{

@@ -75,6 +75,7 @@ func NewTilemapScene(filename string) (*TilemapScene, error) {
 	scene.ecs.AddSystem(systems.UpdateObjects)
 	scene.ecs.AddRenderer(ecs.LayerDefault, systems.NewRender().Draw)
 
+	constructState(scene)
 	constructSpace(scene)
 	constructTileSprites(scene)
 	constructObjects(scene)
@@ -92,6 +93,12 @@ func (s *TilemapScene) Update() {
 func (s *TilemapScene) Draw(screen *ebiten.Image) {
 	screen.Fill(color.RGBA{20, 20, 40, 255})
 	s.ecs.Draw(screen)
+}
+
+func constructState(s *TilemapScene) {
+	entity := s.ecs.World.Create(tags.State, components.State)
+	entry := s.ecs.World.Entry(entity)
+	components.State.Set(entry, components.NewState())
 }
 
 func constructSpace(s *TilemapScene) {
