@@ -24,6 +24,10 @@ func (d *Director) SetInteractions(i *yaml.Interactions) {
 }
 
 func (d *Director) OnInteractionEvent(w donburi.World, event events.Interaction) {
-	sequence := constructSequence(w, d.Interactions, event.Name)
+	steps := d.Interactions.Interactions[event.Name]
+	if steps == nil {
+		return
+	}
+	sequence := constructSequence(w, steps)
 	d.RunnableManager.Start(sequence)
 }

@@ -9,21 +9,16 @@ import (
 	"github.com/yohamta/donburi"
 )
 
-func constructSequence(w donburi.World, interactions *yaml.Interactions, name string) *sequences.Sequence {
+func constructSequence(w donburi.World, stepsList []yaml.Step) *sequences.Sequence {
 	sequence := &sequences.Sequence{
 		Steps: []sequences.Runnable{},
 	}
 
-	interaction := interactions.Interactions[name]
-	if interaction == nil {
-		return sequence
-	}
-
-	for _, s := range interaction {
+	for _, s := range stepsList {
 		var step sequences.Runnable
 		if s.Debug != nil {
 			step = &steps.DebugStep{
-				Text:  fmt.Sprintf("%s: %s", name, s.Debug.Text),
+				Text:  s.Debug.Text,
 				World: w,
 			}
 		} else if s.Dialogue != nil {
@@ -41,8 +36,15 @@ func constructSequence(w donburi.World, interactions *yaml.Interactions, name st
 				State: *s.State,
 				World: w,
 			}
+		} else if s.When != nil {
+			step = &steps.WhenStep{
+				Conditions: s.When.Conditions,
+				Steps:      constructSequence(w, s.When.Steps),
+				Else:       constructSequence(w, s.When.Else),
+				World:      w,
+			}
 		} else {
-			fmt.Printf("Unknown step in %s: %+v\n", name, s)
+			fmt.Printf("Unknown step: %+v\n", s)
 		}
 
 		sequence.Steps = append(sequence.Steps, step)

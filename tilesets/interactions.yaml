@@ -21,4 +21,17 @@ interactions:
     - debug: {}
     - dialogue:
         text: Nice!
+  old-man:
+    - when:
+        conditions:
+          - state:
+              key: hasCoin
+              value: 0
+        steps:
+          - dialogue:
+              text: I lost my coin somewhere in the grass. Can you help me find it?
+        else:
+          - dialogue:
+              text: You found it! Thank you so much!
+
   
