@@ -3,6 +3,7 @@ package scenes
 import (
 	"fmt"
 	"image/color"
+	"io/fs"
 	"techdemo/components"
 	"techdemo/constants"
 	"techdemo/events"
@@ -27,8 +28,8 @@ type TilemapScene struct {
 	Space   *resolv.Space
 }
 
-func NewTilemapScene(filename string) (*TilemapScene, error) {
-	tilemap, err := tilemap.LoadTilemap(filename)
+func NewTilemapScene(files fs.ReadFileFS, filename string) (*TilemapScene, error) {
+	tilemap, err := tilemap.LoadTilemap(files, filename)
 	if err != nil {
 		return nil, fmt.Errorf("failed to load tilemap from %s: %w", filename, err)
 	}

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"image"
-	"os"
+	"io/fs"
 	"path/filepath"
 	"techdemo/interactions/yaml"
 	"time"
@@ -21,11 +21,13 @@ type Tilemap struct {
 	Tilesets     map[string]*ebiten.Image
 	Animations   []Animation
 	Interactions *yaml.Interactions
+	Files        fs.ReadFileFS
 }
 
-func LoadTilemap(filename string) (*Tilemap, error) {
+func LoadTilemap(files fs.ReadFileFS, filename string) (*Tilemap, error) {
 	m := &Tilemap{
 		Filename: filename,
+		Files:    files,
 	}
 	err := m.loadMap()
 	if err != nil {
@@ -48,7 +50,7 @@ func LoadTilemap(filename string) (*Tilemap, error) {
 }
 
 func (m *Tilemap) loadMap() error {
-	tiledMap, err := tiled.LoadFile(m.Filename)
+	tiledMap, err := tiled.LoadFile(m.Filename, tiled.WithFileSystem(m.Files))
 	if err != nil {
 		return fmt.Errorf("error parsing map: %w", err)
 	}
@@ -61,9 +63,9 @@ func (m *Tilemap) loadTilesets() error {
 	m.Tilesets = map[string]*ebiten.Image{}
 	dir := filepath.Dir(m.Filename)
 	for _, tileset := range m.Map.Tilesets {
-		filename := filepath.Join(dir, tileset.Image.Source)
+		filename := dir + "/" + tileset.Image.Source
 		fmt.Println("loading tileset", tileset.Name, "from", filename)
-		source, err := os.ReadFile(filename)
+		source, err := m.Files.ReadFile(filename)
 		if err != nil {
 			return fmt.Errorf("error loading tileset image file: %w", err)
 		}
@@ -88,8 +90,8 @@ func (m *Tilemap) loadTilesets() error {
 func (m *Tilemap) loadInteractions() error {
 	filename := m.Map.Properties.Get("interactionsFilename")[0]
 	dir := filepath.Dir(m.Filename)
-	filepath := filepath.Join(dir, filename)
-	content, err := os.ReadFile(filepath)
+	filepath := dir + "/" + filename
+	content, err := m.Files.ReadFile(filepath)
 	if err != nil {
 		return fmt.Errorf("failed to load interactions from %s: %w", filepath, err)
 	}

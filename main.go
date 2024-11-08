@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "embed"
+	"embed"
 	"fmt"
 	_ "image/png"
 	"log"
@@ -12,6 +12,9 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
+
+//go:embed tilesets/*
+var files embed.FS
 
 type Scene interface {
 	Update()
@@ -25,7 +28,10 @@ type Game struct {
 
 func NewGame() *Game {
 
-	scene, err := scenes.NewTilemapScene("tilesets/tilemap.tmx")
+	dir, _ := files.ReadDir("tilesets")
+	fmt.Printf("%+v\n", dir)
+
+	scene, err := scenes.NewTilemapScene(files, "tilesets/tilemap.tmx")
 	if err != nil {
 		panic(fmt.Sprintf("failed to load scene: %v", err))
 	}
