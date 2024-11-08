@@ -186,9 +186,9 @@ func constructScreenContainer(s *TilemapScene) {
 	entry := w.Entry(entity)
 
 	t := components.Transform.Get(entry)
-	t.LocalPosition = math.NewVec2(0, 0)
+	t.LocalPosition = math.NewVec2(-constants.ScreenWidth/4, -constants.ScreenHeight/4)
 
-	transform.AppendChild(tags.Player.MustFirst(w), entry, true)
+	transform.AppendChild(tags.Player.MustFirst(w), entry, false)
 }
 
 func constructCamera(s *TilemapScene) {
