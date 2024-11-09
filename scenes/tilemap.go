@@ -103,7 +103,7 @@ func constructState(s *TilemapScene) {
 }
 
 func constructSpace(s *TilemapScene) {
-	s.Space = resolv.NewSpace(s.Tilemap.Map.Width*constants.TileSize, s.Tilemap.Map.Height*constants.TileSize, constants.TileSize, constants.TileSize)
+	s.Space = resolv.NewSpace(s.Tilemap.Map.Width*constants.TileSize, s.Tilemap.Map.Height*constants.TileSize, constants.TileSize/2, constants.TileSize/2)
 }
 
 func constructTileSprites(s *TilemapScene) {
@@ -112,6 +112,19 @@ func constructTileSprites(s *TilemapScene) {
 	for li, l := range tilemap.Layers {
 		for i, t := range l.Tiles {
 			if !t.Nil {
+
+				tile, _ := t.Tileset.GetTilesetTile(t.ID)
+				collision := components.CollisionFull
+				layer := li
+
+				if tile != nil {
+					if c := tile.Properties.GetString("collision"); c != "" {
+						collision = components.CollisionType(c)
+					}
+					if lo := tile.Properties.GetInt("layerOffset"); lo != 0 {
+						layer += lo
+					}
+				}
 
 				entity := w.Create(components.Transform, components.Sprite)
 				entry := w.Entry(entity)
@@ -128,13 +141,15 @@ func constructTileSprites(s *TilemapScene) {
 				sprite := components.Sprite.Get(entry)
 				gid := t.ID + t.Tileset.FirstGID - 1
 				sprite.Image = s.Tilemap.Tiles[gid]
-				sprite.Layer = li
+				sprite.Layer = layer
 
 				if l.Name == LayerObjects {
-					object := components.NewObject(entry, constants.Zero, constants.TileSize, constants.TileSize)
-					s.Space.Add(&object.Object)
-					entry.AddComponent(components.Object)
-					components.Object.Set(entry, object)
+					if collision != components.CollisionNone {
+						object := components.NewObject(entry, collision)
+						s.Space.Add(&object.Object)
+						entry.AddComponent(components.Object)
+						components.Object.Set(entry, object)
+					}
 				}
 			}
 
@@ -153,7 +168,7 @@ func constructObjects(s *TilemapScene) {
 			transform := components.Transform.Get(entry)
 			transform.LocalPosition = math.NewVec2(o.X, o.Y)
 
-			object := components.NewObject(entry, constants.Zero, o.Width, o.Height, tags.ResolvTagInteractive)
+			object := components.NewObject(entry, components.CollisionFull, tags.ResolvTagInteractive)
 			s.Space.Add(&object.Object)
 			components.Object.Set(entry, object)
 
@@ -174,9 +189,9 @@ func constructPlayer(s *TilemapScene) {
 	transform.LocalScale = math.NewVec2(scale, scale)
 
 	sprite := components.Sprite.Get(entry)
-	sprite.Layer = 1
+	sprite.Layer = 2
 
-	object := components.NewObject(entry, math.NewVec2(0, 8), constants.TileSize, constants.TileSize/2) // player has collider on lower half of tile only
+	object := components.NewObject(entry, components.CollisionBottom) // player has collider on lower half of tile only
 	s.Space.Add(&object.Object)
 	components.Object.Set(entry, object)
 }
