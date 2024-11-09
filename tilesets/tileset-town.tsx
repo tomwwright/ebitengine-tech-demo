@@ -13,6 +13,11 @@
    <property name="layerOffset" type="int" value="1"/>
   </properties>
  </tile>
+ <tile id="5">
+  <properties>
+   <property name="collision" value="bottom"/>
+  </properties>
+ </tile>
  <tile id="7">
   <properties>
    <property name="collision" value="bottom"/>
@@ -26,6 +31,16 @@
  <tile id="20">
   <properties>
    <property name="collision" value="left"/>
+  </properties>
+ </tile>
+ <tile id="27">
+  <properties>
+   <property name="collision" value="bottom"/>
+  </properties>
+ </tile>
+ <tile id="28">
+  <properties>
+   <property name="collision" value="bottom"/>
   </properties>
  </tile>
  <tile id="31">
