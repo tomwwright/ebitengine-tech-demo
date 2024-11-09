@@ -121,7 +121,7 @@ func sublayerOrder(entry *donburi.Entry) int {
 	if !entry.HasComponent(components.Movement) {
 		return 0
 	} else {
-		return -1
+		return 1
 	}
 }
 
