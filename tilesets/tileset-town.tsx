@@ -20,7 +20,7 @@
  </tile>
  <tile id="7">
   <properties>
-   <property name="collision" value="bottom"/>
+   <property name="collision" value="none"/>
   </properties>
  </tile>
  <tile id="18">
@@ -58,6 +58,11 @@
    <property name="collision" value="top"/>
   </properties>
  </tile>
+ <tile id="83">
+  <properties>
+   <property name="collision" value="bottom"/>
+  </properties>
+ </tile>
  <tile id="85">
   <properties>
    <property name="collision" value="top"/>
@@ -86,6 +91,16 @@
  <tile id="91">
   <properties>
    <property name="collision" value="top"/>
+  </properties>
+ </tile>
+ <tile id="92">
+  <properties>
+   <property name="collision" value="none"/>
+  </properties>
+ </tile>
+ <tile id="94">
+  <properties>
+   <property name="collision" value="bottom"/>
   </properties>
  </tile>
 </tileset>

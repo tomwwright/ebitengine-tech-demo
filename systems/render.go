@@ -118,7 +118,7 @@ func sortEntriesForRendering(entries []*donburi.Entry) {
 // of overlapping objects within a layer
 func sublayerOrder(entry *donburi.Entry) int {
 	// things that don't move sit above things that do
-	if !entry.HasComponent(components.Movement) {
+	if entry.HasComponent(components.Movement) {
 		return 0
 	} else {
 		return 1
