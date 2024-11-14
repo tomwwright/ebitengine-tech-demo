@@ -2,7 +2,7 @@ package steps
 
 import (
 	"techdemo/events"
-	"techdemo/factory/dialogue"
+	"techdemo/factories/dialogue"
 	"techdemo/sequences"
 
 	"github.com/yohamta/donburi"

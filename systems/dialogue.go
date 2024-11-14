@@ -3,7 +3,7 @@ package systems
 import (
 	"techdemo/components"
 	"techdemo/events"
-	"techdemo/factory/dialogue"
+	"techdemo/factories/dialogue"
 	"techdemo/tags"
 
 	"github.com/yohamta/donburi"
