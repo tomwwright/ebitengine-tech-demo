@@ -71,7 +71,7 @@ func NewTilemapScene(files fs.ReadFileFS, filename string) (*TilemapScene, error
 	scene.ecs.AddSystem(systems.NewInput().Update)
 	scene.ecs.AddSystem(systems.ProcessEvents)
 	scene.ecs.AddSystem(playerMovement.Update)
-	scene.ecs.AddSystem(systems.NewPlayerAnimation(tilemap).Update)
+	scene.ecs.AddSystem(systems.UpdatePlayerAnimation)
 	scene.ecs.AddSystem(systems.NewTextAnimation().Update)
 	scene.ecs.AddSystem(systems.UpdateObjects)
 	scene.ecs.AddRenderer(ecs.LayerDefault, systems.NewRender().Draw)
@@ -80,7 +80,10 @@ func NewTilemapScene(files fs.ReadFileFS, filename string) (*TilemapScene, error
 	constructSpace(scene)
 	constructTileSprites(scene)
 	constructObjects(scene)
-	constructPlayer(scene)
+	err = constructPlayer(scene)
+	if err != nil {
+		return nil, fmt.Errorf("unable to create player: %w", err)
+	}
 	constructScreenContainer(scene)
 	constructCamera(scene)
 
@@ -178,9 +181,9 @@ func constructObjects(s *TilemapScene) {
 	}
 }
 
-func constructPlayer(s *TilemapScene) {
+func constructPlayer(s *TilemapScene) error {
 	w := s.ecs.World
-	entity := w.Create(tags.Player, components.Transform, components.Sprite, components.Movement, components.Animation, components.Object)
+	entity := w.Create(tags.Player, components.Transform, components.Sprite, components.Movement, components.Animation, components.CharacterAnimations, components.Object)
 	entry := w.Entry(entity)
 
 	transform := components.Transform.Get(entry)
@@ -194,6 +197,17 @@ func constructPlayer(s *TilemapScene) {
 	object := components.NewObject(entry, components.CollisionBottom) // player has collider on lower half of tile only
 	s.Space.Add(&object.Object)
 	components.Object.Set(entry, object)
+
+	animations := components.CharacterAnimations.Get(entry)
+	keys := []string{systems.AnimationKeyIdle, systems.AnimationKeyWalkUp, systems.AnimationKeyWalkDown, systems.AnimationKeyWalkRight, systems.AnimationKeyWalkLeft}
+	for _, k := range keys {
+		a, ok := s.Tilemap.GetAnimation("player", k)
+		if !ok {
+			return fmt.Errorf("unable to locate player animation: %s", k)
+		}
+		animations.Add(a)
+	}
+	return nil
 }
 
 func constructScreenContainer(s *TilemapScene) {

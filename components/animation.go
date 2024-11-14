@@ -15,6 +15,7 @@ const (
 )
 
 type AnimationData struct {
+	Name      string
 	Frames    []*ebiten.Image
 	Durations []time.Duration
 	index     int
@@ -22,7 +23,7 @@ type AnimationData struct {
 	status    Status
 }
 
-func New(frames []*ebiten.Image, durations []time.Duration) *AnimationData {
+func NewAnimation(frames []*ebiten.Image, durations []time.Duration) *AnimationData {
 	return &AnimationData{
 		Frames:    frames,
 		Durations: durations,

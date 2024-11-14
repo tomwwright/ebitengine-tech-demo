@@ -9,61 +9,39 @@ import (
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
 	"github.com/yohamta/donburi/filter"
-	"github.com/yohamta/donburi/query"
 )
 
-type PlayerAnimation struct {
-	query            *query.Query
-	currentAnimation string
-	animations       animations
-}
+var QueryPlayerAnimation = donburi.NewQuery(filter.Contains(tags.Player, components.Movement, components.Animation, components.CharacterAnimations))
 
-type animations struct {
-	idle  tilemap.Animation
-	left  tilemap.Animation
-	right tilemap.Animation
-	up    tilemap.Animation
-	down  tilemap.Animation
-}
+const (
+	AnimationKeyWalkRight = "walkRight"
+	AnimationKeyWalkLeft  = "walkLeft"
+	AnimationKeyWalkUp    = "walkUp"
+	AnimationKeyWalkDown  = "walkDown"
+	AnimationKeyIdle      = "idle"
+)
 
-func NewPlayerAnimation(tilemap *tilemap.Tilemap) *PlayerAnimation {
-	idle, _ := tilemap.GetAnimation("player", "idle")
-	walkDown, _ := tilemap.GetAnimation("player", "walkDown")
-	walkUp, _ := tilemap.GetAnimation("player", "walkUp")
-	walkLeft, _ := tilemap.GetAnimation("player", "walkLeft")
-	walkRight, _ := tilemap.GetAnimation("player", "walkRight")
+func UpdatePlayerAnimation(ecs *ecs.ECS) {
 
-	return &PlayerAnimation{
-		query: donburi.NewQuery(filter.Contains(tags.Player, components.Movement, components.Animation)),
-		animations: animations{
-			idle:  idle,
-			left:  walkLeft,
-			right: walkRight,
-			up:    walkUp,
-			down:  walkDown,
-		},
-	}
-}
-
-func (pa *PlayerAnimation) Update(ecs *ecs.ECS) {
-
-	playerEntry, ok := pa.query.First(ecs.World)
+	playerEntry, ok := QueryPlayerAnimation.First(ecs.World)
 	if !ok {
 		return
 	}
 
+	movement := components.Movement.Get(playerEntry)
+	animation := components.Animation.Get(playerEntry)
+	characterAnimations := components.CharacterAnimations.Get(playerEntry)
+
 	setAnimationComponent := func(anim tilemap.Animation) {
-		if pa.currentAnimation != anim.Name {
+		if animation.Name != anim.Name {
 			components.Animation.Set(playerEntry, &components.AnimationData{
 				Durations: anim.Durations,
 				Frames:    anim.Frames,
+				Name:      anim.Name,
 			})
-			pa.currentAnimation = anim.Name
+			animation = components.Animation.Get(playerEntry)
 		}
 	}
-
-	movement := components.Movement.Get(playerEntry)
-	animation := components.Animation.Get(playerEntry)
 
 	isMoving := movement.Tween != nil
 	if isMoving {
@@ -74,28 +52,28 @@ func (pa *PlayerAnimation) Update(ecs *ecs.ECS) {
 	switch direction {
 
 	case constants.Right:
-		setAnimationComponent(pa.animations.right)
+		setAnimationComponent(characterAnimations.Animations[AnimationKeyWalkRight])
 
 	case constants.Left:
-		setAnimationComponent(pa.animations.left)
+		setAnimationComponent(characterAnimations.Animations[AnimationKeyWalkLeft])
 
 	case constants.Up:
-		setAnimationComponent(pa.animations.up)
+		setAnimationComponent(characterAnimations.Animations[AnimationKeyWalkUp])
 
 	case constants.Down:
 		if isMoving {
-			setAnimationComponent(pa.animations.down)
+			setAnimationComponent(characterAnimations.Animations[AnimationKeyWalkDown])
 		} else {
-			setAnimationComponent(pa.animations.idle)
+			setAnimationComponent(characterAnimations.Animations[AnimationKeyIdle])
 		}
 
 	default:
-		setAnimationComponent(pa.animations.idle)
+		setAnimationComponent(characterAnimations.Animations[AnimationKeyIdle])
 
 	}
 
 	// idle animation is special case that should play while not moving
-	if !isMoving && pa.currentAnimation != "idle" {
+	if !isMoving && animation.Name != AnimationKeyIdle {
 		animation.PauseAtEnd()
 	}
 }
