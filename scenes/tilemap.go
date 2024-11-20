@@ -3,40 +3,30 @@ package scenes
 import (
 	"fmt"
 	"image/color"
-	"io/fs"
 	"techdemo/components"
 	"techdemo/constants"
 	"techdemo/events"
 	"techdemo/interactions"
 	"techdemo/systems"
 	"techdemo/tags"
-	"techdemo/tilemap"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/solarlune/resolv"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
 	"github.com/yohamta/donburi/features/math"
 	"github.com/yohamta/donburi/features/transform"
 )
 
-const LayerObjects = "Objects"
-
 type TilemapScene struct {
-	ecs     *ecs.ECS
-	Tilemap *tilemap.Tilemap
-	Space   *resolv.Space
+	ecs      *ecs.ECS
+	Director *interactions.Director
+	Objects  *systems.ObjectsSystem
 }
 
-func NewTilemapScene(files fs.ReadFileFS, filename string) (*TilemapScene, error) {
-	tilemap, err := tilemap.LoadTilemap(files, filename)
-	if err != nil {
-		return nil, fmt.Errorf("failed to load tilemap from %s: %w", filename, err)
-	}
-
+func NewTilemapScene() (*TilemapScene, error) {
 	scene := &TilemapScene{
-		ecs:     ecs.NewECS(donburi.NewWorld()),
-		Tilemap: tilemap,
+		ecs:      ecs.NewECS(donburi.NewWorld()),
+		Director: interactions.NewDirector(),
 	}
 
 	dialogue := systems.NewDialogue()
@@ -46,9 +36,7 @@ func NewTilemapScene(files fs.ReadFileFS, filename string) (*TilemapScene, error
 		fmt.Printf("InputEvent: %+v\n", event)
 	}
 
-	director := interactions.NewDirector()
-	director.SetInteractions(tilemap.Interactions)
-
+	director := scene.Director
 	director.RunnableManager.OnStart = func() {
 		events.InputEvent.Unsubscribe(scene.ecs.World, playerMovement.OnInputEvent)
 		events.InputEvent.Unsubscribe(scene.ecs.World, systems.OnInteractEvent)
@@ -66,6 +54,8 @@ func NewTilemapScene(files fs.ReadFileFS, filename string) (*TilemapScene, error
 
 	events.InteractionEvent.Subscribe(scene.ecs.World, director.OnInteractionEvent)
 
+	scene.Objects = systems.NewObjects()
+
 	scene.ecs.AddSystem(systems.NewAnimation().Update)
 	scene.ecs.AddSystem(systems.NewMovement().Update)
 	scene.ecs.AddSystem(systems.NewInput().Update)
@@ -73,17 +63,10 @@ func NewTilemapScene(files fs.ReadFileFS, filename string) (*TilemapScene, error
 	scene.ecs.AddSystem(playerMovement.Update)
 	scene.ecs.AddSystem(systems.UpdatePlayerAnimation)
 	scene.ecs.AddSystem(systems.NewTextAnimation().Update)
-	scene.ecs.AddSystem(systems.UpdateObjects)
+	scene.ecs.AddSystem(scene.Objects.Update)
 	scene.ecs.AddRenderer(ecs.LayerDefault, systems.NewRender().Draw)
 
 	constructState(scene)
-	constructSpace(scene)
-	constructTileSprites(scene)
-	constructObjects(scene)
-	err = constructPlayer(scene)
-	if err != nil {
-		return nil, fmt.Errorf("unable to create player: %w", err)
-	}
 	constructScreenContainer(scene)
 	constructCamera(scene)
 
@@ -105,111 +88,6 @@ func constructState(s *TilemapScene) {
 	components.State.Set(entry, components.NewState())
 }
 
-func constructSpace(s *TilemapScene) {
-	s.Space = resolv.NewSpace(s.Tilemap.Map.Width*constants.TileSize, s.Tilemap.Map.Height*constants.TileSize, constants.TileSize/2, constants.TileSize/2)
-}
-
-func constructTileSprites(s *TilemapScene) {
-	tilemap := s.Tilemap.Map
-	w := s.ecs.World
-	for li, l := range tilemap.Layers {
-		for i, t := range l.Tiles {
-			if !t.Nil {
-
-				tile, _ := t.Tileset.GetTilesetTile(t.ID)
-				collision := components.CollisionFull
-				layer := li
-
-				if tile != nil {
-					if c := tile.Properties.GetString("collision"); c != "" {
-						collision = components.CollisionType(c)
-					}
-					if lo := tile.Properties.GetInt("layerOffset"); lo != 0 {
-						layer += lo
-					}
-				}
-
-				entity := w.Create(components.Transform, components.Sprite)
-				entry := w.Entry(entity)
-
-				transform := components.Transform.Get(entry)
-				xi := i % tilemap.Width
-				yi := i / tilemap.Width
-				x := float64(l.OffsetX + xi*tilemap.TileWidth)
-				y := float64(l.OffsetY + yi*tilemap.TileHeight)
-				scale := float64(1)
-				transform.LocalPosition = math.NewVec2(x, y)
-				transform.LocalScale = math.NewVec2(scale, scale)
-
-				sprite := components.Sprite.Get(entry)
-				gid := t.ID + t.Tileset.FirstGID - 1
-				sprite.Image = s.Tilemap.Tiles[gid]
-				sprite.Layer = layer
-
-				if l.Name == LayerObjects {
-					if collision != components.CollisionNone {
-						object := components.NewObject(entry, collision)
-						s.Space.Add(&object.Object)
-						entry.AddComponent(components.Object)
-						components.Object.Set(entry, object)
-					}
-				}
-			}
-
-		}
-	}
-}
-
-func constructObjects(s *TilemapScene) {
-	tilemap := s.Tilemap.Map
-	w := s.ecs.World
-	for _, group := range tilemap.ObjectGroups {
-		for _, o := range group.Objects {
-			entity := w.Create(components.Transform, components.Object, components.Interaction)
-			entry := w.Entry(entity)
-
-			transform := components.Transform.Get(entry)
-			transform.LocalPosition = math.NewVec2(o.X, o.Y)
-
-			object := components.NewObject(entry, components.CollisionFull, tags.ResolvTagInteractive)
-			s.Space.Add(&object.Object)
-			components.Object.Set(entry, object)
-
-			interaction := components.Interaction.Get(entry)
-			interaction.Name = o.Name
-		}
-	}
-}
-
-func constructPlayer(s *TilemapScene) error {
-	w := s.ecs.World
-	entity := w.Create(tags.Player, components.Transform, components.Sprite, components.Movement, components.Animation, components.CharacterAnimations, components.Object)
-	entry := w.Entry(entity)
-
-	transform := components.Transform.Get(entry)
-	scale := float64(1)
-	transform.LocalPosition = math.NewVec2(16, 16)
-	transform.LocalScale = math.NewVec2(scale, scale)
-
-	sprite := components.Sprite.Get(entry)
-	sprite.Layer = 2
-
-	object := components.NewObject(entry, components.CollisionBottom) // player has collider on lower half of tile only
-	s.Space.Add(&object.Object)
-	components.Object.Set(entry, object)
-
-	animations := components.CharacterAnimations.Get(entry)
-	keys := []string{systems.AnimationKeyIdle, systems.AnimationKeyWalkUp, systems.AnimationKeyWalkDown, systems.AnimationKeyWalkRight, systems.AnimationKeyWalkLeft}
-	for _, k := range keys {
-		a, ok := s.Tilemap.GetAnimation("player", k)
-		if !ok {
-			return fmt.Errorf("unable to locate player animation: %s", k)
-		}
-		animations.Add(a)
-	}
-	return nil
-}
-
 func constructScreenContainer(s *TilemapScene) {
 	w := s.ecs.World
 	entity := w.Create(tags.ScreenContainer, components.Transform)
@@ -217,8 +95,6 @@ func constructScreenContainer(s *TilemapScene) {
 
 	t := components.Transform.Get(entry)
 	t.LocalPosition = math.NewVec2(-constants.ScreenWidth/4, -constants.ScreenHeight/4)
-
-	transform.AppendChild(tags.Player.MustFirst(w), entry, false)
 }
 
 func constructCamera(s *TilemapScene) {

@@ -7,6 +7,7 @@ import (
 	"log"
 	"techdemo/constants"
 	"techdemo/scenes"
+	"techdemo/tilemap"
 
 	"image"
 
@@ -31,10 +32,18 @@ func NewGame() *Game {
 	dir, _ := files.ReadDir("tilesets")
 	fmt.Printf("%+v\n", dir)
 
-	scene, err := scenes.NewTilemapScene(files, "tilesets/tilemap.tmx")
+	filename := "tilesets/tilemap.tmx"
+	tilemap, err := tilemap.LoadTilemap(files, filename)
+	if err != nil {
+		panic(fmt.Errorf("failed to load tilemap from %s: %w", filename, err))
+	}
+
+	scene, err := scenes.NewTilemapScene()
 	if err != nil {
 		panic(fmt.Sprintf("failed to load scene: %v", err))
 	}
+
+	scenes.LoadTilemapIntoTilemapScene(tilemap, scene)
 
 	g := &Game{
 		bounds: image.Rectangle{},
