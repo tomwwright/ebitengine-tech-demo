@@ -60,10 +60,11 @@ func (m *PlayerMovement) Update(ecs *ecs.ECS) {
 	d := float64(constants.TileSize / 2)
 	v := toMovementVector(direction)
 	delta := v.MulScalar(d)
+	x, y := delta.XY()
 
 	object := components.Object.Get(playerEntry)
 
-	if collision := object.Check(delta.XY()); collision == nil {
+	if collision := object.Check(x, y, tags.ResolvTagCollider); collision == nil {
 		transform := components.Transform.Get(playerEntry)
 		from := transform.LocalPosition
 		to := from.Add(delta)

@@ -38,6 +38,7 @@ func NewTilemapScene() (*TilemapScene, error) {
 
 	director := scene.Director
 	director.RunnableManager.OnStart = func() {
+		playerMovement.OnInputEvent(scene.ecs.World, events.InputMoveNone) // cancel player movement
 		events.InputEvent.Unsubscribe(scene.ecs.World, playerMovement.OnInputEvent)
 		events.InputEvent.Unsubscribe(scene.ecs.World, systems.OnInteractEvent)
 
@@ -53,18 +54,23 @@ func NewTilemapScene() (*TilemapScene, error) {
 	events.InputEvent.Subscribe(scene.ecs.World, dialogue.OnInteractEvent)
 
 	events.InteractionEvent.Subscribe(scene.ecs.World, director.OnInteractionEvent)
+	events.TriggerEvent.Subscribe(scene.ecs.World, director.OnTriggerEvent)
+
+	events.MovementFinishedEvent.Subscribe(scene.ecs.World, systems.OnMovementFinishedForTriggers)
 
 	scene.Objects = systems.NewObjects()
 
 	scene.ecs.AddSystem(systems.NewAnimation().Update)
 	scene.ecs.AddSystem(systems.NewMovement().Update)
 	scene.ecs.AddSystem(systems.NewInput().Update)
-	scene.ecs.AddSystem(systems.ProcessEvents)
 	scene.ecs.AddSystem(playerMovement.Update)
 	scene.ecs.AddSystem(systems.UpdatePlayerAnimation)
 	scene.ecs.AddSystem(systems.NewTextAnimation().Update)
 	scene.ecs.AddSystem(scene.Objects.Update)
 	scene.ecs.AddRenderer(ecs.LayerDefault, systems.NewRender().Draw)
+
+	// process events as last system to ensure all component data has been updated
+	scene.ecs.AddSystem(systems.ProcessEvents)
 
 	constructState(scene)
 	constructScreenContainer(scene)

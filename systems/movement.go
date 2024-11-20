@@ -3,6 +3,7 @@ package systems
 import (
 	"techdemo/components"
 	"techdemo/constants"
+	"techdemo/events"
 
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
@@ -33,6 +34,7 @@ func (m *Movement) Update(ecs *ecs.ECS) {
 			transform.LocalPosition = current
 			if isFinished {
 				movement.Tween = nil
+				events.MovementFinishedEvent.Publish(ecs.World, entry)
 			}
 		}
 	})

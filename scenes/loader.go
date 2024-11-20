@@ -101,7 +101,7 @@ func constructObjects(s *TilemapScene, tilemap *tilemap.Tilemap) {
 			transform := components.Transform.Get(entry)
 			transform.LocalPosition = math.NewVec2(o.X, o.Y)
 
-			object := components.NewObject(entry, components.CollisionFull, tags.ResolvTagInteractive)
+			object := components.NewObject(entry, components.CollisionNone, tags.ResolvTagInteractive)
 			components.Object.Set(entry, object)
 
 			interaction := components.Interaction.Get(entry)

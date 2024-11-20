@@ -2,6 +2,7 @@ package factories
 
 import (
 	"techdemo/components"
+	"techdemo/tags"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/lafriks/go-tiled"
@@ -24,7 +25,7 @@ func CreateTile(w donburi.World, t *tiled.LayerTile, position math.Vec2, layer i
 	sprite.Layer = layer
 
 	if collision != components.CollisionNone {
-		object := components.NewObject(entry, collision)
+		object := components.NewObject(entry, collision, tags.ResolvTagCollider)
 		entry.AddComponent(components.Object)
 		components.Object.Set(entry, object)
 	}

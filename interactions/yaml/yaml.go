@@ -4,6 +4,7 @@ import "gopkg.in/yaml.v3"
 
 type Interactions struct {
 	Interactions map[string][]Step `yaml:"interactions"`
+	Triggers     map[string][]Step `yaml:"triggers"`
 }
 
 type Step struct {

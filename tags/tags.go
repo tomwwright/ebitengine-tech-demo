@@ -11,3 +11,4 @@ var (
 )
 
 const ResolvTagInteractive = "Interactive"
+const ResolvTagCollider = "Collider"
