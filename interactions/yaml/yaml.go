@@ -13,6 +13,7 @@ type Step struct {
 	Dialogue *Dialogue `yaml:"dialogue"`
 	State    *State    `yaml:"state"`
 	When     *When     `yaml:"when"`
+	Teleport *Teleport `yaml:"teleport"`
 }
 
 type Debug struct {
@@ -31,6 +32,10 @@ type State struct {
 	Key    string `yaml:"key"`
 	Value  int    `yaml:"value"`
 	Action string `yaml:"action"`
+}
+
+type Teleport struct {
+	To string `yaml:"to"`
 }
 
 type When struct {

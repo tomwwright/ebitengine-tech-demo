@@ -37,5 +37,11 @@ triggers:
   test:
     - dialogue:
         text: Psst. Can you see me?
+  door:
+    - teleport:
+        to: exit
+  exit:
+    - teleport:
+        to: door
 
   
