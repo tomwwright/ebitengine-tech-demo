@@ -14,9 +14,3 @@ const (
 )
 
 var InputEvent = events.NewEventType[Input]()
-
-type Dialogue struct {
-	Text string
-}
-
-var DialogueEvent = events.NewEventType[Dialogue]()
