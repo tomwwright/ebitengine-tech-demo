@@ -50,7 +50,7 @@
  </tile>
  <tile id="74">
   <properties>
-   <property name="collision" value="top"/>
+   <property name="collision" value="none"/>
   </properties>
  </tile>
  <tile id="78">

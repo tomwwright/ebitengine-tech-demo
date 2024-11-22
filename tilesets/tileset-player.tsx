@@ -4,6 +4,7 @@
  <tile id="0" type="player">
   <properties>
    <property name="animationName" value="idle"/>
+   <property name="collision" value="bottom"/>
   </properties>
   <animation>
    <frame tileid="0" duration="600"/>
