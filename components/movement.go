@@ -13,3 +13,7 @@ type MovementData struct {
 }
 
 var Movement = donburi.NewComponentType[MovementData]()
+
+func (m *MovementData) Stop() {
+	m.Tween = nil
+}

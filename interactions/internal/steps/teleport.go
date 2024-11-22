@@ -2,6 +2,7 @@ package steps
 
 import (
 	"fmt"
+	"techdemo/components"
 	"techdemo/sequences"
 	"techdemo/tags"
 
@@ -32,4 +33,8 @@ func teleportPlayerToEntry(w donburi.World, entry *donburi.Entry) {
 	destination := transform.GetTransform(entry)
 
 	t.LocalPosition = destination.LocalPosition
+
+	// stop any current movement
+	m := components.Movement.Get(player)
+	m.Stop()
 }
