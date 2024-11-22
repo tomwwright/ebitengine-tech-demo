@@ -16,16 +16,16 @@ interactions:
         name: coin
     - debug: {}
     - state:
-        key: hasCoin
+        key: has_coin
         action: true
     - debug: {}
     - dialogue:
         text: Nice!
-  old-man:
+  old_man:
     - when:
         conditions:
           - state:
-              key: hasCoin
+              key: has_coin
               value: 0
         steps:
           - dialogue:
