@@ -6,7 +6,9 @@
 - [x] Occlusions [done]
 - [x] Collisions [done]
 - [x] Dialogue [done]
-- [ ] Interactions / state
-  - [ ] State: Interact with object, despawn, update state so that interaction with character yields different dialogue
-  - [ ] Sequence: Interact with character, they walk to another location, interact again and they walk back
+- [x] Interactions / state
+  - [x] State: Interact with object, despawn, update state so that interaction with character yields different dialogue
+  - [x] Teleport: Trigger with object, teleport player
 - [ ] Web hosting
+  - [x] Touch inputs
+- [ ] Audio 

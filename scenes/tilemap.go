@@ -63,6 +63,7 @@ func NewTilemapScene() (*TilemapScene, error) {
 	scene.ecs.AddSystem(systems.NewAnimation().Update)
 	scene.ecs.AddSystem(systems.NewMovement().Update)
 	scene.ecs.AddSystem(systems.NewInput().Update)
+	scene.ecs.AddSystem(systems.NewScreenInput().Update)
 	scene.ecs.AddSystem(playerMovement.Update)
 	scene.ecs.AddSystem(systems.UpdatePlayerAnimation)
 	scene.ecs.AddSystem(systems.NewTextAnimation().Update)
