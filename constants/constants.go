@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	ScreenWidth       = 480
-	ScreenHeight      = 840
+	ScreenWidth       = 360
+	ScreenHeight      = 720
 	TileSize          = 16
 	Scale             = 2
 	DeltaTime         = 1.0 / 60.0

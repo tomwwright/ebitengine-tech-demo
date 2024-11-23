@@ -87,7 +87,7 @@ func insertLineBreaks(text string) string {
 	length := len(text)
 	for _, w := range words[1:] {
 		length += len(w) + 1 // for space
-		if length <= DialogueMaxLineLength {
+		if float32(length) <= DialogueMaxLineLength {
 			text += " " + w
 		} else {
 			text += "\n" + w
