@@ -96,12 +96,15 @@ func constructState(s *TilemapScene) {
 }
 
 func constructScreenContainer(s *TilemapScene) {
-	w := s.ecs.World
-	entity := w.Create(tags.ScreenContainer, components.Transform)
-	entry := w.Entry(entity)
+	world := s.ecs.World
+	entity := world.Create(tags.ScreenContainer, components.Transform)
+	entry := world.Entry(entity)
+
+	w := float64(constants.ScreenWidth/constants.Scale) - constants.TileSize
+	h := float64(constants.ScreenHeight/constants.Scale) - constants.TileSize
 
 	t := components.Transform.Get(entry)
-	t.LocalPosition = math.NewVec2(-constants.ScreenWidth/4, -constants.ScreenHeight/4)
+	t.LocalPosition = math.NewVec2(-w/2, -h/3)
 }
 
 func constructCamera(s *TilemapScene) {
