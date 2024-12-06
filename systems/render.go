@@ -4,6 +4,7 @@ import (
 	"slices"
 	"sort"
 	"techdemo/components"
+	"techdemo/constants"
 	"techdemo/tags"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -22,6 +23,7 @@ const LineSpacing = 16
 type Render struct {
 	sprites *query.Query
 	texts   *query.Query
+	buffer  *ebiten.Image
 }
 
 func NewRender() *Render {
@@ -32,6 +34,7 @@ func NewRender() *Render {
 		texts: query.NewQuery(
 			filter.Contains(transform.Transform, components.Text),
 		),
+		buffer: ebiten.NewImage(constants.ScreenWidth, constants.ScreenHeight),
 	}
 }
 
@@ -59,6 +62,8 @@ func (r *Render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 		cameraMatrix = toCameraSpace(camera, viewport)
 	}
 
+	r.buffer.Clear()
+
 	for _, layer := range layers {
 		for _, entry := range byLayer[layer] {
 			sprite := components.Sprite.Get(entry)
@@ -73,7 +78,7 @@ func (r *Render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 
 				op.GeoM.Concat(cameraMatrix)
 
-				screen.DrawImage(sprite.Image, op)
+				r.buffer.DrawImage(sprite.Image, op)
 			}
 		}
 	}
@@ -95,8 +100,13 @@ func (r *Render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 
 		op.GeoM.Concat(cameraMatrix)
 
-		text.Draw(screen, t.Text, t.Font, op)
+		text.Draw(r.buffer, t.Text, t.Font, op)
 	})
+
+	var screenScaling = vec2.NewVec2(float64(screen.Bounds().Dx())/float64(constants.ScreenWidth), float64(screen.Bounds().Dy())/float64(constants.ScreenHeight))
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Scale(screenScaling.X, screenScaling.Y)
+	screen.DrawImage(r.buffer, op)
 }
 
 func sortEntriesForRendering(entries []*donburi.Entry) {
