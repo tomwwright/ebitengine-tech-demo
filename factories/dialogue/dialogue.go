@@ -1,8 +1,10 @@
 package dialogue
 
 import (
+	"bytes"
 	"image/color"
 	"strings"
+	"techdemo/assets"
 	"techdemo/components"
 	"techdemo/constants"
 	"techdemo/events"
@@ -10,6 +12,7 @@ import (
 
 	"github.com/hajimehoshi/bitmapfont/v3"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/audio/wav"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
@@ -29,7 +32,7 @@ func CreateDialogue(w donburi.World, text string) {
 
 	// backdrop
 
-	entity := w.Create(tags.Dialogue, components.Transform, components.Sprite)
+	entity := w.Create(tags.Dialogue, components.Transform, components.Sprite, components.AudioPlayer)
 	backdrop := w.Entry(entity)
 
 	t := components.Transform.Get(backdrop)
@@ -40,6 +43,27 @@ func CreateDialogue(w donburi.World, text string) {
 	})
 
 	transform.AppendChild(tags.ScreenContainer.MustFirst(w), backdrop, false)
+
+	// audio
+
+	e := tags.Assets.MustFirst(w)
+	asset := components.Assets.Get(e)
+	b, _ := asset.Assets.GetAsset(assets.AssetAudioText)
+	stream, _ := wav.DecodeF32(bytes.NewReader(b))
+
+	context := components.AudioContext.Get(e)
+	audioPlayer, _ := context.NewPlayerF32(stream)
+	audioPlayer.SetVolume(0.4)
+
+	components.AudioPlayer.Set(backdrop, audioPlayer)
+
+	playTextScroll := func(n int) {
+		isWhitespace := n > len(text)-1 || text[n] == ' ' || text[n] == '\n'
+		if !isWhitespace {
+			audioPlayer.SetPosition(0)
+			audioPlayer.Play()
+		}
+	}
 
 	// text
 
@@ -53,8 +77,9 @@ func CreateDialogue(w donburi.World, text string) {
 		Text: "",
 	})
 	components.TextAnimation.Set(entry, &components.TextAnimationData{
-		Speed: DialogueSpeed,
-		Text:  text,
+		Speed:  DialogueSpeed,
+		Text:   text,
+		OnTick: playTextScroll,
 	})
 
 	transform.AppendChild(backdrop, entry, false)

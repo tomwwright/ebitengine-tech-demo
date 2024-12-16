@@ -2,6 +2,7 @@ package scenes
 
 import (
 	"fmt"
+	"techdemo/assets"
 	"techdemo/components"
 	"techdemo/constants"
 	"techdemo/factories"
@@ -9,6 +10,7 @@ import (
 	"techdemo/tags"
 	"techdemo/tilemap"
 
+	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/solarlune/resolv"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
@@ -33,6 +35,10 @@ func LoadTilemapIntoTilemapScene(tilemap *tilemap.Tilemap, scene *TilemapScene) 
 	// attach player to the screen container
 
 	transform.AppendChild(tags.Player.MustFirst(scene.ecs.World), tags.ScreenContainer.MustFirst(scene.ecs.World), false)
+
+	// construct assets
+
+	constructAssets(scene, tilemap)
 
 	return nil
 }
@@ -127,4 +133,15 @@ func constructPlayer(entry *donburi.Entry, tilemap *tilemap.Tilemap) error {
 		animations.Add(a)
 	}
 	return nil
+}
+
+func constructAssets(scene *TilemapScene, tilemap *tilemap.Tilemap) {
+	w := scene.ecs.World
+	entity := w.Create(tags.Assets, components.Assets, components.AudioContext)
+	entry := w.Entry(entity)
+
+	components.AudioContext.Set(entry, audio.NewContext(constants.AudioSampleRate))
+	components.Assets.Set(entry, &components.AssetsData{
+		Assets: assets.NewFileSystemAssets(tilemap.Files),
+	})
 }

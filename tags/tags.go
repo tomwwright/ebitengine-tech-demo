@@ -8,6 +8,7 @@ var (
 	ScreenContainer = donburi.NewTag().SetName("ScreenContainer")
 	Dialogue        = donburi.NewTag().SetName("Dialogue")
 	State           = donburi.NewTag().SetName("State")
+	Assets          = donburi.NewTag().SetName("Assets")
 )
 
 const ResolvTagInteractive = "Interactive"

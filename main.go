@@ -14,7 +14,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-//go:embed tilesets/*
+//go:embed tilesets assets
 var files embed.FS
 
 type Scene interface {
