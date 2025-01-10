@@ -1,6 +1,7 @@
 package scenes
 
 import (
+	"bytes"
 	"fmt"
 	"techdemo/assets"
 	"techdemo/components"
@@ -11,6 +12,7 @@ import (
 	"techdemo/tilemap"
 
 	"github.com/hajimehoshi/ebiten/v2/audio"
+	"github.com/hajimehoshi/ebiten/v2/audio/vorbis"
 	"github.com/solarlune/resolv"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
@@ -39,6 +41,10 @@ func LoadTilemapIntoTilemapScene(tilemap *tilemap.Tilemap, scene *TilemapScene) 
 	// construct assets
 
 	constructAssets(scene, tilemap)
+
+	// construct music player
+
+	constructMusicPlayer(scene, tilemap)
 
 	return nil
 }
@@ -144,4 +150,23 @@ func constructAssets(scene *TilemapScene, tilemap *tilemap.Tilemap) {
 	components.Assets.Set(entry, &components.AssetsData{
 		Assets: assets.NewFileSystemAssets(tilemap.Files),
 	})
+}
+
+func constructMusicPlayer(scene *TilemapScene, tilemap *tilemap.Tilemap) {
+	w := scene.ecs.World
+	entity := w.Create(tags.MusicPlayer, components.AudioPlayer)
+	entry := w.Entry(entity)
+
+	e := tags.Assets.MustFirst(w)
+	asset := components.Assets.Get(e)
+	b, _ := asset.Assets.GetAsset(assets.AssetAudioMusic)
+	stream, _ := vorbis.DecodeF32(bytes.NewReader(b))
+
+	context := components.AudioContext.Get(e)
+	audioPlayer, _ := context.NewPlayerF32(stream)
+	audioPlayer.SetVolume(0.3)
+
+	components.AudioPlayer.Set(entry, audioPlayer)
+
+	audioPlayer.Play()
 }

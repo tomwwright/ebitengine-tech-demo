@@ -11,4 +11,4 @@
   - [x] Teleport: Trigger with object, teleport player
 - [ ] Web hosting
   - [x] Touch inputs
-- [ ] Audio 
+- [x] Audio
