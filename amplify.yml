@@ -1,0 +1,22 @@
+# AWS Amplify build settings https://docs.aws.amazon.com/amplify/latest/userguide/build-settings.html
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.15.0
+        - . ~/.asdf/asdf.sh
+        - asdf plugin add golang https://github.com/asdf-community/asdf-golang.git
+        - asdf install golang 1.22.4
+        - asdf global golang 1.22.4
+        - go env
+        - go env -w GOMODCACHE="$(go env GOROOT)/../packages/pkg/mod"
+    build:
+      commands:
+        - cp $(go env GOROOT)/misc/wasm/wasm_exec.js web
+        - GOOS=js GOARCH=wasm go build -o web/game.wasm *.go
+  artifacts:
+    baseDirectory: web
+    files:
+      - "**/*"
+  cache:
+    paths: []
