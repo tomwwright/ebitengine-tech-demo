@@ -1,8 +1,16 @@
 <!DOCTYPE html>
 <script src="wasm_exec.js"></script>
 <script>
+
+  const fetchWasm = async () => {
+    const compressed = await fetch("game.wasm.gz");
+    const decompressed = compressed.body.pipeThrough(new DecompressionStream("gzip"));
+    return new Response(decompressed, { headers: {"content-type": "application/wasm" } });
+  };
+
   const go = new Go();
-  WebAssembly.instantiateStreaming(fetch("game.wasm"), go.importObject).then(result => {
+  const wasm = fetchWasm();
+  WebAssembly.instantiateStreaming(wasm, go.importObject).then(result => {
     go.run(result.instance);
   });
 </script>
