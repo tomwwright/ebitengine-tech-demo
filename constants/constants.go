@@ -7,10 +7,10 @@ import (
 )
 
 const (
-	ScreenWidth       = 360
-	ScreenHeight      = 720
+	ScreenWidth       = 240
+	ScreenHeight      = 360
 	TileSize          = 16
-	Scale             = 2
+	Scale             = 1
 	DeltaTime         = 1.0 / 60.0
 	DeltaTimeDuration = time.Second / 60.0
 	LayerUI           = 8

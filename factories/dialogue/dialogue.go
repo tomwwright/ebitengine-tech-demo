@@ -20,7 +20,8 @@ import (
 )
 
 const DialogueSpeed = 12.0
-const DialogueMaxLineLength = constants.ScreenWidth / constants.TileSize * constants.Scale * 0.6
+const FontWidth = 5.0
+const DialogueMaxLineLength = constants.ScreenWidth * 0.70 / (FontWidth / constants.Scale)
 
 var BackdropImage = createDialogueBackdrop()
 var DialogueFont = text.NewGoXFace(bitmapfont.Face)
