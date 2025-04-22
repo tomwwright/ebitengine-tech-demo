@@ -57,6 +57,9 @@ func constructTileSprites(s *TilemapScene, tilemap *tilemap.Tilemap) {
 	w := s.ecs.World
 	m := tilemap.Map
 	for li, l := range m.Layers {
+		if !l.Visible {
+			continue
+		}
 
 		// get default collision for this layer from properties
 		layerCollision := components.CollisionNone
