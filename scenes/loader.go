@@ -10,9 +10,12 @@ import (
 	"techdemo/systems"
 	"techdemo/tags"
 	"techdemo/tilemap"
+	"time"
 
+	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/hajimehoshi/ebiten/v2/audio/vorbis"
+	"github.com/lafriks/go-tiled"
 	"github.com/solarlune/resolv"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
@@ -89,7 +92,11 @@ func constructTileSprites(s *TilemapScene, tilemap *tilemap.Tilemap) {
 					}
 				}
 
-				entry := factories.CreateTile(w, t, position, li, collision, image)
+				if tile.Animation != nil {
+					fmt.Printf("%+v\n", tile.Animation[0])
+				}
+
+				entry := factories.CreateTile(w, t, position, layer, collision, image)
 
 				if tile != nil {
 					switch tile.Type {
@@ -98,11 +105,38 @@ func constructTileSprites(s *TilemapScene, tilemap *tilemap.Tilemap) {
 						if err != nil {
 							panic(fmt.Errorf("unable to create player: %w", err))
 						}
+					default:
+						// handle animation
+						if tile.Animation != nil {
+							data, err := constructAnimationFromTile(tilemap.Tiles, t.Tileset, tile)
+							if err != nil {
+								panic(fmt.Errorf("unable to construct tile animation: %w", err))
+							}
+							entry.AddComponent(components.Animation)
+							components.Animation.Set(entry, data)
+						}
 					}
 				}
 			}
 		}
 	}
+}
+
+func constructAnimationFromTile(tiles map[uint32]*ebiten.Image, tileset *tiled.Tileset, t *tiled.TilesetTile) (*components.AnimationData, error) {
+	durations := []time.Duration{}
+	frames := []*ebiten.Image{}
+
+	for _, frame := range t.Animation {
+		gid := frame.TileID + tileset.FirstGID - 1
+		durations = append(durations, time.Duration(frame.Duration*uint32(time.Millisecond)))
+		frames = append(frames, tiles[gid])
+	}
+
+	return &components.AnimationData{
+		Durations: durations,
+		Frames:    frames,
+		Name:      fmt.Sprintf("Tile %d (%s)", t.ID, tileset.Name),
+	}, nil
 }
 
 func constructObjects(s *TilemapScene, tilemap *tilemap.Tilemap) {

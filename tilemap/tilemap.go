@@ -122,9 +122,14 @@ func (m *Tilemap) loadAnimations() {
 					return time.Millisecond * time.Duration(a.Duration)
 				})
 
+				name := tile.Properties.GetString("animationName")
+				if name == "" {
+					name = fmt.Sprintf("Animated Tile %d (Tileset %s)", tile.ID, tileset.Name)
+				}
+
 				animation := Animation{
 					Tileset:   tileset.Name,
-					Name:      tile.Properties.GetString("animationName"),
+					Name:      name,
 					Durations: durations,
 					Frames:    frames,
 				}
