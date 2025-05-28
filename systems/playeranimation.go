@@ -14,11 +14,11 @@ import (
 var QueryPlayerAnimation = donburi.NewQuery(filter.Contains(tags.Player, components.Movement, components.Animation, components.CharacterAnimations))
 
 const (
-	AnimationKeyWalkRight = "walkRight"
-	AnimationKeyWalkLeft  = "walkLeft"
-	AnimationKeyWalkUp    = "walkUp"
-	AnimationKeyWalkDown  = "walkDown"
-	AnimationKeyIdle      = "idle"
+	AnimationKeyWalkRight = "player/walkRight"
+	AnimationKeyWalkLeft  = "player/walkLeft"
+	AnimationKeyWalkUp    = "player/walkUp"
+	AnimationKeyWalkDown  = "player/walkDown"
+	AnimationKeyIdle      = "player/idle"
 )
 
 func UpdatePlayerAnimation(ecs *ecs.ECS) {
@@ -34,11 +34,7 @@ func UpdatePlayerAnimation(ecs *ecs.ECS) {
 
 	setAnimationComponent := func(anim tilemap.Animation) {
 		if animation.Name != anim.Name {
-			components.Animation.Set(playerEntry, &components.AnimationData{
-				Durations: anim.Durations,
-				Frames:    anim.Frames,
-				Name:      anim.Name,
-			})
+			components.Animation.Set(playerEntry, components.NewAnimationFromTilemapAnimation(anim))
 			animation = components.Animation.Get(playerEntry)
 		}
 	}

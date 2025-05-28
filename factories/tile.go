@@ -2,15 +2,15 @@ package factories
 
 import (
 	"techdemo/components"
+	"techdemo/components/collision"
 	"techdemo/tags"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/lafriks/go-tiled"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
 )
 
-func CreateTile(w donburi.World, t *tiled.LayerTile, position math.Vec2, layer int, collision components.CollisionType, image *ebiten.Image) *donburi.Entry {
+func CreateTile(w donburi.World, position math.Vec2, layer int, collisionType collision.CollisionType, image *ebiten.Image) *donburi.Entry {
 	entity := w.Create(components.Transform, components.Sprite)
 	entry := w.Entry(entity)
 
@@ -24,8 +24,8 @@ func CreateTile(w donburi.World, t *tiled.LayerTile, position math.Vec2, layer i
 	sprite.Image = image
 	sprite.Layer = layer
 
-	if collision != components.CollisionNone {
-		object := components.NewObject(entry, collision, tags.ResolvTagCollider)
+	if collisionType != collision.CollisionNone {
+		object := components.NewObject(entry, collisionType, tags.ResolvTagCollider)
 		entry.AddComponent(components.Object)
 		components.Object.Set(entry, object)
 	}

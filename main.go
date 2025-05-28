@@ -7,6 +7,7 @@ import (
 	"log"
 	"techdemo/constants"
 	"techdemo/scenes"
+	"techdemo/tiled"
 	"techdemo/tilemap"
 
 	"image"
@@ -32,18 +33,38 @@ func NewGame() *Game {
 	dir, _ := files.ReadDir("tilesets")
 	fmt.Printf("%+v\n", dir)
 
-	filename := "tilesets/tilemap.tmx"
-	tilemap, err := tilemap.LoadTilemap(files, filename)
+	filename := "tilesets/new.tmx"
+
+	t, err := tiled.Load(filename, tiled.WithFiles(files))
 	if err != nil {
 		panic(fmt.Errorf("failed to load tilemap from %s: %w", filename, err))
 	}
 
+	world := tilemap.BuildFromTiled(t)
+
 	scene, err := scenes.NewTilemapScene()
 	if err != nil {
-		panic(fmt.Sprintf("failed to load scene: %v", err))
+		panic(fmt.Sprintf("failed to create scene: %v", err))
 	}
 
-	scenes.LoadTilemapIntoTilemapScene(tilemap, scene)
+	scene.ConfigureAssets(files)
+
+	err = scenes.LoadScene(world, scene)
+	if err != nil {
+		panic(fmt.Errorf("failed to load scene: %w", filename, err))
+	}
+
+	// tilemap, err := tilemap.LoadTilemap(files, filename)
+	// if err != nil {
+	// 	panic(fmt.Errorf("failed to load tilemap from %s: %w", filename, err))
+	// }
+
+	// scene, err = scenes.NewTilemapScene()
+	// if err != nil {
+	// 	panic(fmt.Sprintf("failed to load scene: %v", err))
+	// }
+
+	// scenes.LoadTilemapIntoTilemapScene(tilemap, scene)
 
 	g := &Game{
 		bounds: image.Rectangle{},

@@ -3,6 +3,8 @@ package scenes
 import (
 	"fmt"
 	"image/color"
+	"io/fs"
+	"techdemo/assets"
 	"techdemo/components"
 	"techdemo/constants"
 	"techdemo/events"
@@ -11,6 +13,7 @@ import (
 	"techdemo/tags"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
 	"github.com/yohamta/donburi/features/math"
@@ -119,4 +122,15 @@ func constructCamera(s *TilemapScene) {
 	t.LocalRotation = 0
 
 	transform.AppendChild(tags.ScreenContainer.MustFirst(w), entry, false)
+}
+
+func (s *TilemapScene) ConfigureAssets(files fs.ReadFileFS) {
+	entity := s.ecs.World.Create(tags.Assets, components.Assets, components.AudioContext)
+	entry := s.ecs.World.Entry(entity)
+
+	components.AudioContext.Set(entry, audio.NewContext(constants.AudioSampleRate))
+	components.Assets.Set(entry, &components.AssetsData{
+		Assets: assets.NewFileSystemAssets(files),
+	})
+
 }

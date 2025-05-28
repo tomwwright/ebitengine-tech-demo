@@ -1,6 +1,7 @@
 package components
 
 import (
+	"techdemo/tilemap"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -27,6 +28,24 @@ func NewAnimation(frames []*ebiten.Image, durations []time.Duration) *AnimationD
 	return &AnimationData{
 		Frames:    frames,
 		Durations: durations,
+		index:     0,
+		timer:     0,
+		status:    Playing,
+	}
+}
+
+func NewAnimationFromTilemapAnimation(animation tilemap.Animation) *AnimationData {
+	durations := []time.Duration{}
+	frames := []*ebiten.Image{}
+	for _, frame := range animation.Frames {
+		durations = append(durations, frame.Duration)
+		frames = append(frames, frame.Image)
+	}
+
+	return &AnimationData{
+		Name:      animation.Name,
+		Durations: durations,
+		Frames:    frames,
 		index:     0,
 		timer:     0,
 		status:    Playing,
@@ -63,7 +82,7 @@ func (anim *AnimationData) Update(elapsedTime time.Duration) {
 }
 
 func (anim *AnimationData) Image() *ebiten.Image {
-	if anim.Length() == 0 {
+	if anim.IsNil() {
 		return nil
 	}
 	return anim.Frames[anim.index]
@@ -85,7 +104,14 @@ func (anim *AnimationData) Length() int {
 	return len(anim.Frames)
 }
 
+func (anim *AnimationData) IsNil() bool {
+	return anim.Length() == 0
+}
+
 func (anim *AnimationData) FrameDuration() time.Duration {
+	if anim.IsNil() {
+		return 0
+	}
 	return anim.Durations[anim.index]
 }
 
