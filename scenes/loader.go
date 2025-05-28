@@ -3,13 +3,14 @@ package scenes
 import (
 	"bytes"
 	"fmt"
-	"techdemo/assets"
-	"techdemo/components"
-	"techdemo/components/collision"
-	"techdemo/constants"
-	"techdemo/factories"
-	"techdemo/tags"
-	"techdemo/tilemap"
+
+	"github.com/tomwwright/ebitengine-tech-demo/assets"
+	"github.com/tomwwright/ebitengine-tech-demo/components"
+	"github.com/tomwwright/ebitengine-tech-demo/components/collision"
+	"github.com/tomwwright/ebitengine-tech-demo/constants"
+	"github.com/tomwwright/ebitengine-tech-demo/factories"
+	"github.com/tomwwright/ebitengine-tech-demo/tags"
+	"github.com/tomwwright/ebitengine-tech-demo/tilemap"
 
 	"github.com/hajimehoshi/ebiten/v2/audio/vorbis"
 	"github.com/solarlune/resolv"

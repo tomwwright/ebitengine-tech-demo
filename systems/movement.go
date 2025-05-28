@@ -1,9 +1,9 @@
 package systems
 
 import (
-	"techdemo/components"
-	"techdemo/constants"
-	"techdemo/events"
+	"github.com/tomwwright/ebitengine-tech-demo/components"
+	"github.com/tomwwright/ebitengine-tech-demo/constants"
+	"github.com/tomwwright/ebitengine-tech-demo/events"
 
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"

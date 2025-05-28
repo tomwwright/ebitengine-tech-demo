@@ -1,9 +1,10 @@
 package tilemap
 
 import (
-	"techdemo/components/collision"
-	"techdemo/interactions/yaml"
 	"time"
+
+	"github.com/tomwwright/ebitengine-tech-demo/components/collision"
+	"github.com/tomwwright/ebitengine-tech-demo/interactions/yaml"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi/features/math"

@@ -1,7 +1,7 @@
 package components
 
 import (
-	"techdemo/components/collision"
+	"github.com/tomwwright/ebitengine-tech-demo/components/collision"
 
 	"github.com/solarlune/resolv"
 	"github.com/yohamta/donburi"

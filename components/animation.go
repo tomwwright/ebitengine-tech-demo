@@ -1,8 +1,9 @@
 package components
 
 import (
-	"techdemo/tilemap"
 	"time"
+
+	"github.com/tomwwright/ebitengine-tech-demo/tilemap"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"

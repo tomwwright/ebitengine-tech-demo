@@ -1,7 +1,7 @@
 package components
 
 import (
-	"techdemo/tilemap"
+	"github.com/tomwwright/ebitengine-tech-demo/tilemap"
 
 	"github.com/yohamta/donburi"
 )

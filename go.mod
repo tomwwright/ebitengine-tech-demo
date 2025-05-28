@@ -1,4 +1,4 @@
-module techdemo
+module github.com/tomwwright/ebitengine-tech-demo
 
 go 1.22.4
 

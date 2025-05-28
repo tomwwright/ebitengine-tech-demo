@@ -2,10 +2,11 @@ package tiled
 
 import (
 	"image"
-	"techdemo/components/collision"
-	"techdemo/interactions/yaml"
-	"techdemo/tilemap"
 	"time"
+
+	"github.com/tomwwright/ebitengine-tech-demo/components/collision"
+	"github.com/tomwwright/ebitengine-tech-demo/interactions/yaml"
+	"github.com/tomwwright/ebitengine-tech-demo/tilemap"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/lafriks/go-tiled"

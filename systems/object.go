@@ -1,7 +1,7 @@
 package systems
 
 import (
-	"techdemo/components"
+	"github.com/tomwwright/ebitengine-tech-demo/components"
 
 	"github.com/solarlune/resolv"
 	"github.com/yohamta/donburi"

@@ -5,10 +5,11 @@ import (
 	"fmt"
 	_ "image/png"
 	"log"
-	"techdemo/constants"
-	"techdemo/scenes"
-	"techdemo/tiled"
-	"techdemo/tilemap"
+
+	"github.com/tomwwright/ebitengine-tech-demo/constants"
+	"github.com/tomwwright/ebitengine-tech-demo/scenes"
+	"github.com/tomwwright/ebitengine-tech-demo/tiled"
+	"github.com/tomwwright/ebitengine-tech-demo/tilemap"
 
 	"image"
 

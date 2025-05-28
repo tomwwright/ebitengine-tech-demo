@@ -1,7 +1,7 @@
 package tilemap
 
 import (
-	"techdemo/components/collision"
+	"github.com/tomwwright/ebitengine-tech-demo/components/collision"
 )
 
 func BuildFromTiled(tiled Tiled) *TileMap {

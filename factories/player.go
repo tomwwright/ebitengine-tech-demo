@@ -2,11 +2,12 @@ package factories
 
 import (
 	"fmt"
-	"techdemo/components"
-	"techdemo/components/collision"
-	"techdemo/systems"
-	"techdemo/tags"
-	"techdemo/tilemap"
+
+	"github.com/tomwwright/ebitengine-tech-demo/components"
+	"github.com/tomwwright/ebitengine-tech-demo/components/collision"
+	"github.com/tomwwright/ebitengine-tech-demo/systems"
+	"github.com/tomwwright/ebitengine-tech-demo/tags"
+	"github.com/tomwwright/ebitengine-tech-demo/tilemap"
 
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"

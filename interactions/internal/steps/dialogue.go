@@ -1,9 +1,9 @@
 package steps
 
 import (
-	"techdemo/events"
-	"techdemo/factories/dialogue"
-	"techdemo/sequences"
+	"github.com/tomwwright/ebitengine-tech-demo/events"
+	"github.com/tomwwright/ebitengine-tech-demo/factories/dialogue"
+	"github.com/tomwwright/ebitengine-tech-demo/sequences"
 
 	"github.com/yohamta/donburi"
 )

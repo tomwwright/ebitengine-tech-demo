@@ -2,10 +2,11 @@ package systems
 
 import (
 	"fmt"
-	"techdemo/components"
-	"techdemo/constants"
-	"techdemo/events"
-	"techdemo/tags"
+
+	"github.com/tomwwright/ebitengine-tech-demo/components"
+	"github.com/tomwwright/ebitengine-tech-demo/constants"
+	"github.com/tomwwright/ebitengine-tech-demo/events"
+	"github.com/tomwwright/ebitengine-tech-demo/tags"
 
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/filter"

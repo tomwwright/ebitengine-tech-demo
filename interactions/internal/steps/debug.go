@@ -2,8 +2,9 @@ package steps
 
 import (
 	"fmt"
-	"techdemo/components"
-	"techdemo/sequences"
+
+	"github.com/tomwwright/ebitengine-tech-demo/components"
+	"github.com/tomwwright/ebitengine-tech-demo/sequences"
 
 	"github.com/yohamta/donburi"
 )

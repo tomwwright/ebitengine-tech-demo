@@ -2,8 +2,9 @@ package systems
 
 import (
 	"math"
-	"techdemo/constants"
-	"techdemo/events"
+
+	"github.com/tomwwright/ebitengine-tech-demo/constants"
+	"github.com/tomwwright/ebitengine-tech-demo/events"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"

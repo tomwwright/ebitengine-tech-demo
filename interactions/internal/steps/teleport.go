@@ -2,9 +2,10 @@ package steps
 
 import (
 	"fmt"
-	"techdemo/components"
-	"techdemo/sequences"
-	"techdemo/tags"
+
+	"github.com/tomwwright/ebitengine-tech-demo/components"
+	"github.com/tomwwright/ebitengine-tech-demo/sequences"
+	"github.com/tomwwright/ebitengine-tech-demo/tags"
 
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/transform"

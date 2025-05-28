@@ -1,10 +1,10 @@
 package systems
 
 import (
-	"techdemo/components"
-	"techdemo/events"
-	"techdemo/factories/dialogue"
-	"techdemo/tags"
+	"github.com/tomwwright/ebitengine-tech-demo/components"
+	"github.com/tomwwright/ebitengine-tech-demo/events"
+	"github.com/tomwwright/ebitengine-tech-demo/factories/dialogue"
+	"github.com/tomwwright/ebitengine-tech-demo/tags"
 
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/transform"

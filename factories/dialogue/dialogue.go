@@ -4,11 +4,12 @@ import (
 	"bytes"
 	"image/color"
 	"strings"
-	"techdemo/assets"
-	"techdemo/components"
-	"techdemo/constants"
-	"techdemo/events"
-	"techdemo/tags"
+
+	"github.com/tomwwright/ebitengine-tech-demo/assets"
+	"github.com/tomwwright/ebitengine-tech-demo/components"
+	"github.com/tomwwright/ebitengine-tech-demo/constants"
+	"github.com/tomwwright/ebitengine-tech-demo/events"
+	"github.com/tomwwright/ebitengine-tech-demo/tags"
 
 	"github.com/hajimehoshi/bitmapfont/v3"
 	"github.com/hajimehoshi/ebiten/v2"

@@ -6,7 +6,8 @@ import (
 	"image"
 	"io/fs"
 	"path/filepath"
-	"techdemo/interactions/yaml"
+
+	"github.com/tomwwright/ebitengine-tech-demo/interactions/yaml"
 
 	"github.com/lafriks/go-tiled"
 )

@@ -3,9 +3,10 @@ package systems
 import (
 	"slices"
 	"sort"
-	"techdemo/components"
-	"techdemo/constants"
-	"techdemo/tags"
+
+	"github.com/tomwwright/ebitengine-tech-demo/components"
+	"github.com/tomwwright/ebitengine-tech-demo/constants"
+	"github.com/tomwwright/ebitengine-tech-demo/tags"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"

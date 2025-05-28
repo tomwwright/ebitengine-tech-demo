@@ -2,9 +2,10 @@ package interactions
 
 import (
 	"fmt"
-	"techdemo/interactions/internal/steps"
-	"techdemo/interactions/yaml"
-	"techdemo/sequences"
+
+	"github.com/tomwwright/ebitengine-tech-demo/interactions/internal/steps"
+	"github.com/tomwwright/ebitengine-tech-demo/interactions/yaml"
+	"github.com/tomwwright/ebitengine-tech-demo/sequences"
 
 	"github.com/yohamta/donburi"
 )

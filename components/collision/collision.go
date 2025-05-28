@@ -1,7 +1,7 @@
 package collision
 
 import (
-	"techdemo/constants"
+	"github.com/tomwwright/ebitengine-tech-demo/constants"
 
 	"github.com/yohamta/donburi/features/math"
 )

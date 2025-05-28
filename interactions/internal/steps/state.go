@@ -1,9 +1,9 @@
 package steps
 
 import (
-	"techdemo/components"
-	"techdemo/interactions/yaml"
-	"techdemo/sequences"
+	"github.com/tomwwright/ebitengine-tech-demo/components"
+	"github.com/tomwwright/ebitengine-tech-demo/interactions/yaml"
+	"github.com/tomwwright/ebitengine-tech-demo/sequences"
 
 	"github.com/yohamta/donburi"
 )

@@ -1,9 +1,10 @@
 package systems
 
 import (
-	"techdemo/constants"
-	"techdemo/events"
 	"testing"
+
+	"github.com/tomwwright/ebitengine-tech-demo/constants"
+	"github.com/tomwwright/ebitengine-tech-demo/events"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/yohamta/donburi/features/math"

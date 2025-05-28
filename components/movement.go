@@ -1,7 +1,7 @@
 package components
 
 import (
-	"techdemo/tween"
+	"github.com/tomwwright/ebitengine-tech-demo/tween"
 
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"

@@ -1,8 +1,9 @@
 package sequences_test
 
 import (
-	"techdemo/sequences"
 	"testing"
+
+	"github.com/tomwwright/ebitengine-tech-demo/sequences"
 
 	"github.com/samber/lo"
 	"github.com/stretchr/testify/assert"

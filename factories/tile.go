@@ -1,9 +1,9 @@
 package factories
 
 import (
-	"techdemo/components"
-	"techdemo/components/collision"
-	"techdemo/tags"
+	"github.com/tomwwright/ebitengine-tech-demo/components"
+	"github.com/tomwwright/ebitengine-tech-demo/components/collision"
+	"github.com/tomwwright/ebitengine-tech-demo/tags"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"

@@ -1,7 +1,7 @@
 package tilemap
 
 import (
-	"techdemo/interactions/yaml"
+	"github.com/tomwwright/ebitengine-tech-demo/interactions/yaml"
 
 	"github.com/yohamta/donburi/features/math"
 )

@@ -1,9 +1,9 @@
 package systems
 
 import (
-	"techdemo/components"
-	"techdemo/events"
-	"techdemo/tags"
+	"github.com/tomwwright/ebitengine-tech-demo/components"
+	"github.com/tomwwright/ebitengine-tech-demo/events"
+	"github.com/tomwwright/ebitengine-tech-demo/tags"
 
 	"github.com/solarlune/resolv"
 	"github.com/yohamta/donburi"

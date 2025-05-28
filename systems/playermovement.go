@@ -1,11 +1,11 @@
 package systems
 
 import (
-	"techdemo/components"
-	"techdemo/constants"
-	"techdemo/events"
-	"techdemo/tags"
-	"techdemo/tween"
+	"github.com/tomwwright/ebitengine-tech-demo/components"
+	"github.com/tomwwright/ebitengine-tech-demo/constants"
+	"github.com/tomwwright/ebitengine-tech-demo/events"
+	"github.com/tomwwright/ebitengine-tech-demo/tags"
+	"github.com/tomwwright/ebitengine-tech-demo/tween"
 
 	"github.com/tanema/gween/ease"
 	"github.com/yohamta/donburi"

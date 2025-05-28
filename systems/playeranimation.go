@@ -1,10 +1,10 @@
 package systems
 
 import (
-	"techdemo/components"
-	"techdemo/constants"
-	"techdemo/tags"
-	"techdemo/tilemap"
+	"github.com/tomwwright/ebitengine-tech-demo/components"
+	"github.com/tomwwright/ebitengine-tech-demo/constants"
+	"github.com/tomwwright/ebitengine-tech-demo/tags"
+	"github.com/tomwwright/ebitengine-tech-demo/tilemap"
 
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
