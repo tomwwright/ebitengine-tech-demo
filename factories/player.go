@@ -5,6 +5,7 @@ import (
 
 	"github.com/tomwwright/ebitengine-tech-demo/components"
 	"github.com/tomwwright/ebitengine-tech-demo/components/collision"
+	"github.com/tomwwright/ebitengine-tech-demo/constants"
 	"github.com/tomwwright/ebitengine-tech-demo/systems"
 	"github.com/tomwwright/ebitengine-tech-demo/tags"
 	"github.com/tomwwright/ebitengine-tech-demo/tilemap"
@@ -27,6 +28,9 @@ func CreatePlayer(w donburi.World, animations Animations, position math.Vec2, la
 	transform.LocalPosition = position
 	scale := float64(1)
 	transform.LocalScale = math.NewVec2(scale, scale)
+
+	object := components.NewObject(entry, constants.TileSize, constants.TileSize, tags.ResolvTagInteractive)
+	components.Object.Set(entry, object)
 
 	sprite := components.Sprite.Get(entry)
 	sprite.Layer = layer
