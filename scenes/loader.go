@@ -6,7 +6,6 @@ import (
 
 	"github.com/tomwwright/ebitengine-tech-demo/assets"
 	"github.com/tomwwright/ebitengine-tech-demo/components"
-	"github.com/tomwwright/ebitengine-tech-demo/components/collision"
 	"github.com/tomwwright/ebitengine-tech-demo/constants"
 	"github.com/tomwwright/ebitengine-tech-demo/factories"
 	"github.com/tomwwright/ebitengine-tech-demo/tags"
@@ -44,7 +43,7 @@ func LoadScene(world *tilemap.TileMap, scene *TilemapScene) error {
 		transform := components.Transform.Get(entry)
 		transform.LocalPosition = o.Position
 
-		object := components.NewObject(entry, collision.CollisionNone, tags.ResolvTagInteractive)
+		object := components.NewObject(entry, constants.TileSize, constants.TileSize, tags.ResolvTagInteractive)
 		components.Object.Set(entry, object)
 
 		interaction := components.Interaction.Get(entry)

@@ -3,10 +3,12 @@ package steps
 import (
 	"fmt"
 
+	"github.com/solarlune/resolv"
 	"github.com/tomwwright/ebitengine-tech-demo/components"
 	"github.com/tomwwright/ebitengine-tech-demo/sequences"
 
 	"github.com/yohamta/donburi"
+	"github.com/yohamta/donburi/features/transform"
 )
 
 type DespawnStep struct {
@@ -42,7 +44,7 @@ func findAndRemoveOverlappingObjectsByEntry(w donburi.World, entry *donburi.Entr
 	position := object.Position
 	size := object.Size
 
-	removals := []*components.ObjectData{}
+	removals := []*resolv.Object{}
 	components.Object.Each(w, func(e *donburi.Entry) {
 		object := components.Object.Get(e)
 		if object.Position == position && object.Size == size {
@@ -52,8 +54,11 @@ func findAndRemoveOverlappingObjectsByEntry(w donburi.World, entry *donburi.Entr
 
 	for _, object := range removals {
 		fmt.Printf("Removing %+v\n", object)
-		object.Space.Remove(&object.Object)
-		entity := object.Data.(*donburi.Entry).Entity()
+		object.Space.Remove(object)
+		entry := object.Data.(*donburi.Entry)
+		entity := entry.Entity()
+
+		transform.RemoveRecursive(entry)
 		w.Remove(entity)
 	}
 }

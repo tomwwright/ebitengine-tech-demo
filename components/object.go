@@ -1,28 +1,17 @@
 package components
 
 import (
-	"github.com/tomwwright/ebitengine-tech-demo/components/collision"
-
 	"github.com/solarlune/resolv"
 	"github.com/yohamta/donburi"
-	"github.com/yohamta/donburi/features/math"
 )
 
-type ObjectData struct {
-	resolv.Object
-	TransformOffset math.Vec2
-}
+var Object = donburi.NewComponentType[resolv.Object]()
 
-var Object = donburi.NewComponentType[ObjectData]()
-
-func NewObject(entry *donburi.Entry, collision collision.CollisionType, tags ...string) *ObjectData {
-	offset, w, h := collision.Mask()
-	object := resolv.NewObject(0, 0, w, h, tags...)
+func NewObject(entry *donburi.Entry, width int, height int, tags ...string) *resolv.Object {
+	object := resolv.NewObject(0, 0, float64(width), float64(height), tags...)
 	object.Data = entry
-	return &ObjectData{
-		Object:          *object,
-		TransformOffset: offset,
-	}
+
+	return object
 }
 
 func ResolveObjectEntry(object *resolv.Object) *donburi.Entry {

@@ -62,7 +62,8 @@ func (m *PlayerMovement) Update(ecs *ecs.ECS) {
 	delta := v.MulScalar(d)
 	x, y := delta.XY()
 
-	object := components.Object.Get(playerEntry)
+	collider, _ := transform.FindChildWithComponent(playerEntry, components.Object)
+	object := components.Object.Get(collider)
 
 	if collision := object.Check(x, y, tags.ResolvTagCollider); collision == nil {
 		transform := components.Transform.Get(playerEntry)

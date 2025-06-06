@@ -31,8 +31,7 @@ func CreatePlayer(w donburi.World, animations Animations, position math.Vec2, la
 	sprite := components.Sprite.Get(entry)
 	sprite.Layer = layer
 
-	object := components.NewObject(entry, collision.CollisionBottom, tags.ResolvTagCollider)
-	components.Object.Set(entry, object)
+	AddCollision(entry, collision.CollisionBottom)
 
 	ca := components.CharacterAnimations.Get(entry)
 	keys := []string{systems.AnimationKeyIdle, systems.AnimationKeyWalkUp, systems.AnimationKeyWalkDown, systems.AnimationKeyWalkRight, systems.AnimationKeyWalkLeft}

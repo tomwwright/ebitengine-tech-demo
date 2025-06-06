@@ -3,7 +3,6 @@ package factories
 import (
 	"github.com/tomwwright/ebitengine-tech-demo/components"
 	"github.com/tomwwright/ebitengine-tech-demo/components/collision"
-	"github.com/tomwwright/ebitengine-tech-demo/tags"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
@@ -25,9 +24,7 @@ func CreateTile(w donburi.World, position math.Vec2, layer int, collisionType co
 	sprite.Layer = layer
 
 	if collisionType != collision.CollisionNone {
-		object := components.NewObject(entry, collisionType, tags.ResolvTagCollider)
-		entry.AddComponent(components.Object)
-		components.Object.Set(entry, object)
+		AddCollision(entry, collisionType)
 	}
 
 	return entry

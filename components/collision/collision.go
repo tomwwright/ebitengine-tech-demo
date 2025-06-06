@@ -1,47 +1,44 @@
 package collision
 
-import (
-	"github.com/tomwwright/ebitengine-tech-demo/constants"
-
-	"github.com/yohamta/donburi/features/math"
-)
-
 type CollisionType string
 
 const (
-	CollisionUndefined CollisionType = ""
-	CollisionFull      CollisionType = "full"
-	CollisionNone      CollisionType = "none"
-	CollisionLeft      CollisionType = "left"
-	CollisionRight     CollisionType = "right"
-	CollisionTop       CollisionType = "top"
-	CollisionBottom    CollisionType = "bottom"
+	CollisionUndefined      CollisionType = ""
+	CollisionFull           CollisionType = "full"
+	CollisionNone           CollisionType = "none"
+	CollisionLeft           CollisionType = "left"
+	CollisionRight          CollisionType = "right"
+	CollisionTop            CollisionType = "top"
+	CollisionBottom         CollisionType = "bottom"
+	CollisionNotTopLeft     CollisionType = "not_top_left"
+	CollisionNotTopRight    CollisionType = "not_top_right"
+	CollisionNotBottomLeft  CollisionType = "not_bottom_left"
+	CollisionNotBottomRight CollisionType = "not_bottom_right"
 )
 
-func (collision CollisionType) Mask() (offset math.Vec2, w float64, h float64) {
-	half := float64(constants.TileSize / 2)
+func (collision CollisionType) Mask() CollisionMask {
 	switch collision {
+	case CollisionFull:
+		return CollisionMask{true, true, true, true}
+	case CollisionNone:
+		return CollisionMask{false, false, false, false}
 	case CollisionLeft:
-		offset = constants.Zero
-		w = half
-		h = constants.TileSize
+		return CollisionMask{true, false, true, false}
 	case CollisionRight:
-		offset = math.NewVec2(half, 0)
-		w = half
-		h = constants.TileSize
+		return CollisionMask{false, true, false, true}
 	case CollisionTop:
-		offset = constants.Zero
-		w = constants.TileSize
-		h = half
+		return CollisionMask{true, true, false, false}
 	case CollisionBottom:
-		offset = math.NewVec2(0, half)
-		w = constants.TileSize
-		h = half
-	default:
-		offset = constants.Zero
-		w = constants.TileSize
-		h = constants.TileSize
+		return CollisionMask{false, false, true, true}
+	case CollisionNotTopLeft:
+		return CollisionMask{false, true, true, true}
+	case CollisionNotTopRight:
+		return CollisionMask{true, false, true, true}
+	case CollisionNotBottomLeft:
+		return CollisionMask{true, true, false, true}
+	case CollisionNotBottomRight:
+		return CollisionMask{true, true, true, false}
 	}
 
-	return offset, w, h
+	return CollisionMask{false, false, false, false}
 }

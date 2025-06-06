@@ -25,10 +25,10 @@ func (os *ObjectsSystem) Update(ecs *ecs.ECS) {
 		object := components.Object.Get(e)
 
 		if os.Space != nil && object.Space != os.Space {
-			os.Space.Add(&object.Object)
+			os.Space.Add(object)
 		}
 
-		position := transform.WorldPosition(e).Add(object.TransformOffset)
+		position := transform.WorldPosition(e)
 		object.Position.X = position.X
 		object.Position.Y = position.Y
 		object.Update()
