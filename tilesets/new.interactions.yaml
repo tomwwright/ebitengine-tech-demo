@@ -1,0 +1,62 @@
+interactions:
+  mushroom:
+    - dialogue:
+        text: Two colourful little mushrooms. Delicious? Or deadly?
+  sign:
+    - debug:
+        text: Debugging...
+    - dialogue:
+        text: Welcome to Sunny Valley! If you're a newcomer, that is. Otherwise, good day I suppose...
+    - dialogue:
+        text: Thanks...?
+  well:
+    - dialogue:
+        text: The town well is full to the brim with cool, fresh water.
+  coin:
+    - dialogue:
+        text: Hey, there is a shiny coin here in the grass!
+    - despawn:
+        name: coin
+    - debug: {}
+    - state:
+        key: has_coin
+        action: true
+    - debug: {}
+    - dialogue:
+        text: Nice!
+  old_man:
+    - when:
+        conditions:
+          - state:
+              key: has_coin
+              value: 0
+        steps:
+          - dialogue:
+              text: I lost my coin somewhere in the grass. Can you help me find it?
+        else:
+          - dialogue:
+              text: You found it! Thank you so much!
+triggers:
+  test:
+    - dialogue:
+        text: Psst. Can you see me?
+  door_home_inside_left:
+    - teleport:
+        to: door_home_outside_left
+  door_home_outside_left:
+    - teleport:
+        to: door_home_inside_left
+  door_home_inside_right:
+    - teleport:
+        to: door_home_outside_right
+  door_home_outside_right:
+    - teleport:
+        to: door_home_inside_right
+  door:
+    - teleport:
+        to: exit
+  exit:
+    - teleport:
+        to: door
+
+  
