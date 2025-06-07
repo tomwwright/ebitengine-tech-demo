@@ -49,6 +49,11 @@ func constructSequence(w donburi.World, stepsList []yaml.Step) *sequences.Sequen
 				To:    s.Teleport.To,
 				World: w,
 			}
+		} else if s.Filter != nil {
+			step = &steps.FilterStep{
+				Name:  s.Filter.Name,
+				World: w,
+			}
 		} else {
 			fmt.Printf("Unknown step: %+v\n", s)
 		}

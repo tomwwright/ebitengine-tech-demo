@@ -1,6 +1,8 @@
 package components
 
 import (
+	"image/color"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/tomwwright/ebitengine-tech-demo/constants"
@@ -11,6 +13,7 @@ import (
 type CameraData struct {
 	ToScreen ebiten.GeoM
 	Viewport math.Vec2
+	Color    color.Color
 }
 
 var Camera = donburi.NewComponentType[CameraData]()
@@ -51,6 +54,7 @@ func (c *CameraData) IsVisible(position math.Vec2, size math.Vec2) bool {
 
 func (c *CameraData) Draw(image *ebiten.Image, position math.Vec2, scale math.Vec2, screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
+	op.ColorScale.ScaleWithColor(c.Color)
 	op.GeoM.Scale(scale.X, scale.Y)
 	op.GeoM.Translate(position.X, position.Y)
 	op.GeoM.Concat(c.ToScreen)

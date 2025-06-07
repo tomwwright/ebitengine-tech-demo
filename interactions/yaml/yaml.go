@@ -14,6 +14,7 @@ type Step struct {
 	State    *State    `yaml:"state"`
 	When     *When     `yaml:"when"`
 	Teleport *Teleport `yaml:"teleport"`
+	Filter   *Filter   `yaml:"filter"`
 }
 
 type Debug struct {
@@ -36,6 +37,10 @@ type State struct {
 
 type Teleport struct {
 	To string `yaml:"to"`
+}
+
+type Filter struct {
+	Name string `yaml:"name"`
 }
 
 type When struct {

@@ -119,6 +119,9 @@ func constructCamera(s *TilemapScene) {
 	entity := w.Create(tags.Camera, components.Transform, components.Movement, components.Camera)
 	entry := w.Entry(entity)
 
+	camera := components.Camera.Get(entry)
+	camera.Color = color.White
+
 	t := components.Transform.Get(entry)
 	scale := float64(constants.Scale)
 	t.LocalPosition = math.NewVec2(0, 0)

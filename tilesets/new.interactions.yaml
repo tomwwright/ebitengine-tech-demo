@@ -52,6 +52,12 @@ triggers:
   door_home_outside_right:
     - teleport:
         to: door_home_inside_right
+  exit_forest:
+    - filter:
+        name: day
+  enter_forest:
+    - filter:
+        name: night
   door:
     - teleport:
         to: exit
