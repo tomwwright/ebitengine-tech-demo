@@ -41,12 +41,11 @@ func NewTilemapScene() (*TilemapScene, error) {
 	}
 
 	director := scene.Director
-	director.RunnableManager.OnStart = func() {
+	events.InteractionEvent.Subscribe(scene.ecs.World, func(w donburi.World, event events.Interaction) {
 		playerMovement.OnInputEvent(scene.ecs.World, events.InputMoveNone) // cancel player movement
 		events.InputEvent.Unsubscribe(scene.ecs.World, playerMovement.OnInputEvent)
 		events.InputEvent.Unsubscribe(scene.ecs.World, systems.OnInteractEvent)
-
-	}
+	})
 	director.RunnableManager.OnFinish = func() {
 		events.InputEvent.Subscribe(scene.ecs.World, playerMovement.OnInputEvent)
 		events.InputEvent.Subscribe(scene.ecs.World, systems.OnInteractEvent)
