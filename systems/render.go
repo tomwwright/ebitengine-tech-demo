@@ -6,25 +6,21 @@ import (
 
 	"github.com/tomwwright/ebitengine-tech-demo/components"
 	"github.com/tomwwright/ebitengine-tech-demo/constants"
-	"github.com/tomwwright/ebitengine-tech-demo/tags"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/samber/lo"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
 	"github.com/yohamta/donburi/features/math"
-	vec2 "github.com/yohamta/donburi/features/math"
 	"github.com/yohamta/donburi/features/transform"
 	"github.com/yohamta/donburi/filter"
 	"github.com/yohamta/donburi/query"
 )
 
-const LineSpacing = 16
-
 type Render struct {
 	sprites *query.Query
 	texts   *query.Query
+	cameras *query.Query
 	buffer  *ebiten.Image
 }
 
@@ -36,25 +32,33 @@ func NewRender() *Render {
 		texts: query.NewQuery(
 			filter.Contains(transform.Transform, components.Text),
 		),
-		buffer: ebiten.NewImage(constants.ScreenWidth, constants.ScreenHeight),
+		cameras: query.NewQuery(filter.Contains(transform.Transform, components.Camera)),
+		buffer:  ebiten.NewImage(constants.ScreenWidth, constants.ScreenHeight),
 	}
 }
 
 func (r *Render) Update(ecs *ecs.ECS) {
-	// do nothing
+	r.cameras.Each(ecs.World, func(e *donburi.Entry) {
+		position := transform.WorldPosition(e)
+		rotation := transform.WorldRotation(e)
+		scale := transform.WorldScale(e)
+		camera := components.Camera.Get(e)
+		camera.Calculate(position, scale, rotation)
+	})
 }
 
 func (r *Render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 
-	var toScreen ebiten.GeoM
-	viewport := vec2.NewVec2(float64(screen.Bounds().Dx()), float64(screen.Bounds().Dy()))
-	if camera, ok := tags.Camera.First(ecs.World); ok {
-		toScreen = toCameraSpace(camera, viewport)
+	e, ok := r.cameras.First(ecs.World)
+	if !ok {
+		return
 	}
+	camera := components.Camera.Get(e)
+	camera.SetViewportFromImage(screen)
 
 	entries := []*donburi.Entry{}
 	r.sprites.Each(ecs.World, func(entry *donburi.Entry) {
-		if isCullable(entry, toScreen, viewport) {
+		if isCullable(entry, camera) {
 			return
 		}
 
@@ -75,42 +79,21 @@ func (r *Render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 		for _, entry := range byLayer[layer] {
 			sprite := components.Sprite.Get(entry)
 			if sprite.Image != nil {
-				op := &ebiten.DrawImageOptions{}
-
 				scale := transform.WorldScale(entry)
-				op.GeoM.Scale(scale.X, scale.Y)
-
 				position := transform.WorldPosition(entry)
-				op.GeoM.Translate(position.X, position.Y)
-
-				op.GeoM.Concat(toScreen)
-
-				r.buffer.DrawImage(sprite.Image, op)
+				camera.Draw(sprite.Image, position, scale, r.buffer)
 			}
 		}
 	}
 
 	r.texts.Each(ecs.World, func(entry *donburi.Entry) {
-		op := &text.DrawOptions{
-			LayoutOptions: text.LayoutOptions{
-				LineSpacing: LineSpacing,
-			},
-		}
-
 		t := components.Text.Get(entry)
-
 		scale := transform.WorldScale(entry)
-		op.GeoM.Scale(scale.X, scale.Y)
-
 		position := transform.WorldPosition(entry)
-		op.GeoM.Translate(position.X, position.Y)
-
-		op.GeoM.Concat(toScreen)
-
-		text.Draw(r.buffer, t.Text, t.Font, op)
+		camera.DrawText(t.Font, t.Text, position, scale, r.buffer)
 	})
 
-	var screenScaling = vec2.NewVec2(float64(screen.Bounds().Dx())/float64(constants.ScreenWidth), float64(screen.Bounds().Dy())/float64(constants.ScreenHeight))
+	var screenScaling = math.NewVec2(float64(screen.Bounds().Dx())/float64(constants.ScreenWidth), float64(screen.Bounds().Dy())/float64(constants.ScreenHeight))
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Scale(screenScaling.X, screenScaling.Y)
 	screen.DrawImage(r.buffer, op)
@@ -142,43 +125,14 @@ func sublayerOrder(entry *donburi.Entry) int {
 	}
 }
 
-func toCameraSpace(cameraEntry *donburi.Entry, viewport vec2.Vec2) ebiten.GeoM {
-	m := ebiten.GeoM{}
-
-	viewportCenter := viewport.MulScalar(0.5)
-	position := transform.WorldPosition(cameraEntry)
-	rotation := transform.WorldRotation(cameraEntry)
-	scale := transform.WorldScale(cameraEntry)
-
-	m.Translate(-position.X, -position.Y)
-
-	m.Translate(-viewportCenter.X/scale.X, -viewportCenter.Y/scale.Y) // rotate around center of viewport, considering scale
-	m.Rotate(rotation)
-
-	m.Translate(viewportCenter.X/scale.X, viewportCenter.Y/scale.Y)
-
-	m.Scale(
-		scale.X,
-		scale.Y,
-	)
-
-	return m
-}
-
-func isCullable(entry *donburi.Entry, toScreen ebiten.GeoM, viewport math.Vec2) bool {
+func isCullable(entry *donburi.Entry, camera *components.CameraData) bool {
 	sprite := components.Sprite.Get(entry)
 	if sprite.Image == nil {
 		return true
 	}
 	scale := transform.WorldScale(entry)
 	position := transform.WorldPosition(entry)
+	size := position.Add(math.NewVec2(float64(sprite.Image.Bounds().Dx()), float64(sprite.Image.Bounds().Dy())).Mul(scale))
 
-	minX, minY := toScreen.Apply(position.XY())
-	maxX, maxY := math.NewVec2(minX, minY).Add(math.NewVec2(float64(sprite.Image.Bounds().Dx()), float64(sprite.Image.Bounds().Dy())).Mul(scale)).XY()
-
-	if maxX < -viewport.X/10 || maxY < -viewport.Y/10 || minX > viewport.X*1.1 || minY > viewport.Y*1.1 {
-		return true
-	}
-
-	return false
+	return !camera.IsVisible(position, size)
 }

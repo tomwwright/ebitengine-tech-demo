@@ -64,6 +64,8 @@ func NewTilemapScene() (*TilemapScene, error) {
 
 	scene.Objects = systems.NewObjects()
 
+	render := systems.NewRender()
+
 	scene.ecs.AddSystem(systems.NewAnimation().Update)
 	scene.ecs.AddSystem(systems.NewMovement().Update)
 	scene.ecs.AddSystem(systems.NewInput().Update)
@@ -72,7 +74,8 @@ func NewTilemapScene() (*TilemapScene, error) {
 	scene.ecs.AddSystem(systems.UpdatePlayerAnimation)
 	scene.ecs.AddSystem(systems.NewTextAnimation().Update)
 	scene.ecs.AddSystem(scene.Objects.Update)
-	scene.ecs.AddRenderer(ecs.LayerDefault, systems.NewRender().Draw)
+	scene.ecs.AddSystem(render.Update)
+	scene.ecs.AddRenderer(ecs.LayerDefault, render.Draw)
 
 	// process events as last system to ensure all component data has been updated
 	scene.ecs.AddSystem(systems.ProcessEvents)
@@ -113,7 +116,7 @@ func constructScreenContainer(s *TilemapScene) {
 
 func constructCamera(s *TilemapScene) {
 	w := s.ecs.World
-	entity := w.Create(tags.Camera, components.Transform, components.Movement)
+	entity := w.Create(tags.Camera, components.Transform, components.Movement, components.Camera)
 	entry := w.Entry(entity)
 
 	t := components.Transform.Get(entry)

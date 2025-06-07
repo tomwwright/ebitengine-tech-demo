@@ -15,6 +15,7 @@ const (
 	DeltaTimeDuration = time.Second / 60.0
 	LayerUI           = 8
 	AudioSampleRate   = 22000
+	LineSpacing       = 16
 )
 
 var Up = math.NewVec2(0, -1)
