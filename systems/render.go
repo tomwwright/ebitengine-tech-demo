@@ -13,6 +13,7 @@ import (
 	"github.com/samber/lo"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
+	"github.com/yohamta/donburi/features/math"
 	vec2 "github.com/yohamta/donburi/features/math"
 	"github.com/yohamta/donburi/features/transform"
 	"github.com/yohamta/donburi/filter"
@@ -44,8 +45,19 @@ func (r *Render) Update(ecs *ecs.ECS) {
 }
 
 func (r *Render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
-	var entries []*donburi.Entry
+
+	var toScreen ebiten.GeoM
+	viewport := vec2.NewVec2(float64(screen.Bounds().Dx()), float64(screen.Bounds().Dy()))
+	if camera, ok := tags.Camera.First(ecs.World); ok {
+		toScreen = toCameraSpace(camera, viewport)
+	}
+
+	entries := []*donburi.Entry{}
 	r.sprites.Each(ecs.World, func(entry *donburi.Entry) {
+		if isCullable(entry, toScreen, viewport) {
+			return
+		}
+
 		entries = append(entries, entry)
 	})
 
@@ -56,12 +68,6 @@ func (r *Render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 	})
 	layers := lo.Keys(byLayer)
 	sort.Ints(layers)
-
-	var cameraMatrix ebiten.GeoM
-	if camera, ok := tags.Camera.First(ecs.World); ok {
-		viewport := vec2.NewVec2(float64(screen.Bounds().Dx()), float64(screen.Bounds().Dy()))
-		cameraMatrix = toCameraSpace(camera, viewport)
-	}
 
 	r.buffer.Clear()
 
@@ -77,7 +83,7 @@ func (r *Render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 				position := transform.WorldPosition(entry)
 				op.GeoM.Translate(position.X, position.Y)
 
-				op.GeoM.Concat(cameraMatrix)
+				op.GeoM.Concat(toScreen)
 
 				r.buffer.DrawImage(sprite.Image, op)
 			}
@@ -99,7 +105,7 @@ func (r *Render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 		position := transform.WorldPosition(entry)
 		op.GeoM.Translate(position.X, position.Y)
 
-		op.GeoM.Concat(cameraMatrix)
+		op.GeoM.Concat(toScreen)
 
 		text.Draw(r.buffer, t.Text, t.Font, op)
 	})
@@ -157,4 +163,22 @@ func toCameraSpace(cameraEntry *donburi.Entry, viewport vec2.Vec2) ebiten.GeoM {
 	)
 
 	return m
+}
+
+func isCullable(entry *donburi.Entry, toScreen ebiten.GeoM, viewport math.Vec2) bool {
+	sprite := components.Sprite.Get(entry)
+	if sprite.Image == nil {
+		return true
+	}
+	scale := transform.WorldScale(entry)
+	position := transform.WorldPosition(entry)
+
+	minX, minY := toScreen.Apply(position.XY())
+	maxX, maxY := math.NewVec2(minX, minY).Add(math.NewVec2(float64(sprite.Image.Bounds().Dx()), float64(sprite.Image.Bounds().Dy())).Mul(scale)).XY()
+
+	if maxX < -viewport.X/10 || maxY < -viewport.Y/10 || minX > viewport.X*1.1 || minY > viewport.Y*1.1 {
+		return true
+	}
+
+	return false
 }
