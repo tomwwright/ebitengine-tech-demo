@@ -15,6 +15,7 @@ type Step struct {
 	When     *When     `yaml:"when"`
 	Teleport *Teleport `yaml:"teleport"`
 	Filter   *Filter   `yaml:"filter"`
+	Music    *Music    `yaml:"music"`
 }
 
 type Debug struct {
@@ -40,6 +41,10 @@ type Teleport struct {
 }
 
 type Filter struct {
+	Name string `yaml:"name"`
+}
+
+type Music struct {
 	Name string `yaml:"name"`
 }
 

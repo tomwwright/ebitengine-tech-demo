@@ -54,6 +54,11 @@ func constructSequence(w donburi.World, stepsList []yaml.Step) *sequences.Sequen
 				Name:  s.Filter.Name,
 				World: w,
 			}
+		} else if s.Music != nil {
+			step = &steps.MusicStep{
+				Name:  s.Music.Name,
+				World: w,
+			}
 		} else {
 			fmt.Printf("Unknown step: %+v\n", s)
 		}

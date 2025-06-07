@@ -1,17 +1,14 @@
 package scenes
 
 import (
-	"bytes"
 	"fmt"
 
-	"github.com/tomwwright/ebitengine-tech-demo/assets"
 	"github.com/tomwwright/ebitengine-tech-demo/components"
 	"github.com/tomwwright/ebitengine-tech-demo/constants"
 	"github.com/tomwwright/ebitengine-tech-demo/factories"
 	"github.com/tomwwright/ebitengine-tech-demo/tags"
 	"github.com/tomwwright/ebitengine-tech-demo/tilemap"
 
-	"github.com/hajimehoshi/ebiten/v2/audio/vorbis"
 	"github.com/solarlune/resolv"
 	"github.com/yohamta/donburi/features/transform"
 )
@@ -67,20 +64,12 @@ func LoadScene(world *tilemap.TileMap, scene *TilemapScene) error {
 
 	// construct music player
 
-	entity := w.Create(tags.MusicPlayer, components.AudioPlayer)
+	entity := w.Create(tags.MusicPlayer, components.AudioPlayer, components.Music)
 	entry := w.Entry(entity)
-	e := tags.Assets.MustFirst(w)
-	asset := components.Assets.Get(e)
-	b, _ := asset.Assets.GetAsset(assets.AssetAudioMusic)
-	stream, _ := vorbis.DecodeF32(bytes.NewReader(b))
-
-	context := components.AudioContext.Get(e)
-	audioPlayer, _ := context.NewPlayerF32(stream)
-	audioPlayer.SetVolume(0.3)
-
-	components.AudioPlayer.Set(entry, audioPlayer)
-
-	audioPlayer.Play()
+	music := components.NewMusic(entry)
+	components.Music.Set(entry, music)
+	components.AudioPlayer.Set(entry, nil)
+	music.ChangeTrack("town")
 
 	return nil
 }

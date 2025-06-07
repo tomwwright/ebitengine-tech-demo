@@ -5,8 +5,9 @@ import "io/fs"
 type Asset string
 
 const (
-	AssetAudioText  Asset = "assets/audio/text.wav"
-	AssetAudioMusic Asset = "assets/audio/music.ogg"
+	AssetAudioText        Asset = "assets/audio/text.wav"
+	AssetAudioMusic       Asset = "assets/audio/music.ogg"
+	AssetAudioMusicForest Asset = "assets/audio/forest.ogg"
 )
 
 type FileSystemAssets struct {

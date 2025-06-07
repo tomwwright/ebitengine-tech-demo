@@ -55,9 +55,13 @@ triggers:
   exit_forest:
     - filter:
         name: day
+    - music:
+        name: town
   enter_forest:
     - filter:
         name: night
+    - music:
+        name: forest
   door:
     - teleport:
         to: exit
