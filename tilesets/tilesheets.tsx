@@ -271,28 +271,12 @@
  <tile id="262"/>
  <tile id="263"/>
  <tile id="264"/>
- <tile id="266">
-  <properties>
-   <property name="layerOffset" type="int" value="-1"/>
-  </properties>
- </tile>
- <tile id="265">
-  <properties>
-   <property name="layerOffset" type="int" value="-1"/>
-  </properties>
- </tile>
+ <tile id="266"/>
+ <tile id="265"/>
  <tile id="267"/>
  <tile id="268"/>
- <tile id="269">
-  <properties>
-   <property name="layerOffset" type="int" value="-1"/>
-  </properties>
- </tile>
- <tile id="270">
-  <properties>
-   <property name="layerOffset" type="int" value="-1"/>
-  </properties>
- </tile>
+ <tile id="269"/>
+ <tile id="270"/>
  <tile id="271"/>
  <tile id="272"/>
  <tile id="273"/>
@@ -343,16 +327,8 @@
  <tile id="290"/>
  <tile id="291"/>
  <tile id="292"/>
- <tile id="293">
-  <properties>
-   <property name="layerOffset" type="int" value="-1"/>
-  </properties>
- </tile>
- <tile id="294">
-  <properties>
-   <property name="layerOffset" type="int" value="-1"/>
-  </properties>
- </tile>
+ <tile id="293"/>
+ <tile id="294"/>
  <tile id="295"/>
  <tile id="296"/>
  <tile id="297"/>
