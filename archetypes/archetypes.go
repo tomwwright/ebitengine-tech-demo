@@ -13,5 +13,11 @@ func (a Archetype) Create(w donburi.World) *donburi.Entry {
 	return w.Entry(entity)
 }
 
-var MusicPlayer = Archetype{tags.MusicPlayer, components.AudioPlayer, components.Asset}
-var Interaction = Archetype{components.Transform, components.Object, components.Interaction}
+var (
+	MusicPlayer     = Archetype{tags.MusicPlayer, components.AudioPlayer, components.Asset}
+	Interaction     = Archetype{components.Transform, components.Object, components.Interaction}
+	Assets          = Archetype{tags.Assets, components.Assets, components.AudioContext}
+	Camera          = Archetype{tags.Camera, components.Transform, components.Movement, components.Camera}
+	ScreenContainer = Archetype{tags.ScreenContainer, components.Transform}
+	State           = Archetype{tags.State, components.State}
+)

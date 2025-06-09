@@ -3,7 +3,6 @@ package scenes
 import (
 	"fmt"
 
-	"github.com/tomwwright/ebitengine-tech-demo/archetypes"
 	"github.com/tomwwright/ebitengine-tech-demo/assets"
 	"github.com/tomwwright/ebitengine-tech-demo/components"
 	"github.com/tomwwright/ebitengine-tech-demo/constants"
@@ -36,16 +35,7 @@ func LoadScene(world *tilemap.TileMap, scene *TilemapScene) error {
 	// spawn objects
 
 	for _, o := range world.Objects {
-		e := archetypes.Interaction.Create(w)
-
-		transform := components.Transform.Get(e)
-		transform.LocalPosition = o.Position
-
-		object := components.NewObject(e, constants.TileSize, constants.TileSize, tags.ResolvTagInteractive)
-		components.Object.Set(e, object)
-
-		interaction := components.Interaction.Get(e)
-		interaction.Name = o.Name
+		factories.CreateObject(w, o.Position, o.Name)
 	}
 
 	// spawn player

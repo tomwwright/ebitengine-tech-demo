@@ -5,16 +5,16 @@ import (
 	"image/color"
 	"io/fs"
 
-	"github.com/tomwwright/ebitengine-tech-demo/assets"
+	"github.com/tomwwright/ebitengine-tech-demo/archetypes"
 	"github.com/tomwwright/ebitengine-tech-demo/components"
 	"github.com/tomwwright/ebitengine-tech-demo/constants"
 	"github.com/tomwwright/ebitengine-tech-demo/events"
+	"github.com/tomwwright/ebitengine-tech-demo/factories"
 	"github.com/tomwwright/ebitengine-tech-demo/interactions"
 	"github.com/tomwwright/ebitengine-tech-demo/systems"
 	"github.com/tomwwright/ebitengine-tech-demo/tags"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
 	"github.com/yohamta/donburi/features/math"
@@ -98,47 +98,27 @@ func (s *TilemapScene) Draw(screen *ebiten.Image) {
 }
 
 func constructState(s *TilemapScene) {
-	entity := s.ecs.World.Create(tags.State, components.State)
-	entry := s.ecs.World.Entry(entity)
-	components.State.Set(entry, components.NewState())
+	e := archetypes.State.Create(s.ecs.World)
+	components.State.Set(e, components.NewState())
 }
 
 func constructScreenContainer(s *TilemapScene) {
 	world := s.ecs.World
-	entity := world.Create(tags.ScreenContainer, components.Transform)
-	entry := world.Entry(entity)
+	e := archetypes.ScreenContainer.Create(world)
+	t := components.Transform.Get(e)
 
 	w := float64(constants.ScreenWidth/constants.Scale) - constants.TileSize
 	h := float64(constants.ScreenHeight/constants.Scale) - constants.TileSize
 
-	t := components.Transform.Get(entry)
 	t.LocalPosition = math.NewVec2(-w/2, -h/3)
 }
 
 func constructCamera(s *TilemapScene) {
 	w := s.ecs.World
-	entity := w.Create(tags.Camera, components.Transform, components.Movement, components.Camera)
-	entry := w.Entry(entity)
-
-	camera := components.Camera.Get(entry)
-	camera.Color = color.White
-
-	t := components.Transform.Get(entry)
-	scale := float64(constants.Scale)
-	t.LocalPosition = math.NewVec2(0, 0)
-	t.LocalScale = math.NewVec2(scale, scale)
-	t.LocalRotation = 0
-
-	transform.AppendChild(tags.ScreenContainer.MustFirst(w), entry, false)
+	e := factories.CreateCamera(w)
+	transform.AppendChild(tags.ScreenContainer.MustFirst(w), e, false)
 }
 
 func (s *TilemapScene) ConfigureAssets(files fs.ReadFileFS) {
-	entity := s.ecs.World.Create(tags.Assets, components.Assets, components.AudioContext)
-	entry := s.ecs.World.Entry(entity)
-
-	components.AudioContext.Set(entry, audio.NewContext(constants.AudioSampleRate))
-	components.Assets.Set(entry, &components.AssetsData{
-		Assets: assets.NewFileSystemAssets(files),
-	})
-
+	factories.CreateAssets(s.ecs.World, files)
 }
