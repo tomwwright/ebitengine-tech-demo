@@ -1,10 +1,9 @@
 package scenes
 
 import (
-	"bytes"
 	"fmt"
 
-	"github.com/hajimehoshi/ebiten/v2/audio/vorbis"
+	"github.com/tomwwright/ebitengine-tech-demo/archetypes"
 	"github.com/tomwwright/ebitengine-tech-demo/assets"
 	"github.com/tomwwright/ebitengine-tech-demo/components"
 	"github.com/tomwwright/ebitengine-tech-demo/constants"
@@ -37,16 +36,15 @@ func LoadScene(world *tilemap.TileMap, scene *TilemapScene) error {
 	// spawn objects
 
 	for _, o := range world.Objects {
-		entity := w.Create(components.Transform, components.Object, components.Interaction)
-		entry := w.Entry(entity)
+		e := archetypes.Interaction.Create(w)
 
-		transform := components.Transform.Get(entry)
+		transform := components.Transform.Get(e)
 		transform.LocalPosition = o.Position
 
-		object := components.NewObject(entry, constants.TileSize, constants.TileSize, tags.ResolvTagInteractive)
-		components.Object.Set(entry, object)
+		object := components.NewObject(e, constants.TileSize, constants.TileSize, tags.ResolvTagInteractive)
+		components.Object.Set(e, object)
 
-		interaction := components.Interaction.Get(entry)
+		interaction := components.Interaction.Get(e)
 		interaction.Name = o.Name
 	}
 
@@ -67,23 +65,13 @@ func LoadScene(world *tilemap.TileMap, scene *TilemapScene) error {
 
 	// construct music player
 
-	e := tags.Assets.MustFirst(w)
-
-	context := components.AudioContext.Get(e)
-	asset := components.Assets.Get(e)
-
-	entity := w.Create(tags.MusicPlayer, components.AudioPlayer, components.Asset)
-	entry := w.Entry(entity)
-
-	components.Asset.SetValue(entry, components.AssetData{
-		Asset: assets.AssetAudioMusic,
-	})
-	b, _ := asset.Assets.GetAsset(assets.AssetAudioMusic)
-	stream, _ := vorbis.DecodeF32(bytes.NewReader(b))
-	audio, _ := context.NewPlayerF32(stream)
+	e, err := factories.CreateMusicPlayer(w, assets.AssetAudioMusic)
+	if err != nil {
+		return fmt.Errorf("failed to create music: %w", err)
+	}
+	audio := components.AudioPlayer.Get(e)
 	audio.SetVolume(0.3)
 	audio.Play()
-	components.AudioPlayer.Set(entry, audio)
 
 	return nil
 }
