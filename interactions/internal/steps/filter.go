@@ -7,6 +7,7 @@ import (
 
 	"github.com/tanema/gween/ease"
 	"github.com/tomwwright/ebitengine-tech-demo/components"
+	"github.com/tomwwright/ebitengine-tech-demo/constants"
 	"github.com/tomwwright/ebitengine-tech-demo/sequences"
 	"github.com/tomwwright/ebitengine-tech-demo/tags"
 	"github.com/tomwwright/ebitengine-tech-demo/tween"
@@ -20,8 +21,8 @@ type FilterStep struct {
 }
 
 var filters = map[string]color.Color{
-	"day":   color.White,
-	"night": color.RGBA{150, 160, 220, 255},
+	"day":   constants.White,
+	"night": constants.Blueish,
 }
 
 func (s *FilterStep) Run(done sequences.Done) {

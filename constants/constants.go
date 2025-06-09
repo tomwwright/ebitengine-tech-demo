@@ -1,6 +1,7 @@
 package constants
 
 import (
+	"image/color"
 	"time"
 
 	"github.com/yohamta/donburi/features/math"
@@ -23,3 +24,6 @@ var Down = math.NewVec2(0, 1)
 var Left = math.NewVec2(-1, 0)
 var Right = math.NewVec2(1, 0)
 var Zero = math.NewVec2(0, 0)
+
+var White = color.RGBA{255, 255, 255, 255}
+var Blueish = color.RGBA{150, 160, 220, 255}
