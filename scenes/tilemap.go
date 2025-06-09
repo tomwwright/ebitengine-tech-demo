@@ -73,6 +73,8 @@ func NewTilemapScene() (*TilemapScene, error) {
 	scene.ecs.AddSystem(systems.UpdatePlayerAnimation)
 	scene.ecs.AddSystem(systems.NewTextAnimation().Update)
 	scene.ecs.AddSystem(scene.Objects.Update)
+	scene.ecs.AddSystem(systems.UpdateFilterChange)
+	scene.ecs.AddSystem(systems.UpdateMusicChange)
 	scene.ecs.AddSystem(render.Update)
 	scene.ecs.AddRenderer(ecs.LayerDefault, render.Draw)
 

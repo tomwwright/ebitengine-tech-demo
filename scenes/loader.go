@@ -1,8 +1,11 @@
 package scenes
 
 import (
+	"bytes"
 	"fmt"
 
+	"github.com/hajimehoshi/ebiten/v2/audio/vorbis"
+	"github.com/tomwwright/ebitengine-tech-demo/assets"
 	"github.com/tomwwright/ebitengine-tech-demo/components"
 	"github.com/tomwwright/ebitengine-tech-demo/constants"
 	"github.com/tomwwright/ebitengine-tech-demo/factories"
@@ -64,12 +67,23 @@ func LoadScene(world *tilemap.TileMap, scene *TilemapScene) error {
 
 	// construct music player
 
-	entity := w.Create(tags.MusicPlayer, components.AudioPlayer, components.Music)
+	e := tags.Assets.MustFirst(w)
+
+	context := components.AudioContext.Get(e)
+	asset := components.Assets.Get(e)
+
+	entity := w.Create(tags.MusicPlayer, components.AudioPlayer, components.Asset)
 	entry := w.Entry(entity)
-	music := components.NewMusic(entry)
-	components.Music.Set(entry, music)
-	components.AudioPlayer.Set(entry, nil)
-	music.ChangeTrack("town")
+
+	components.Asset.SetValue(entry, components.AssetData{
+		Asset: assets.AssetAudioMusic,
+	})
+	b, _ := asset.Assets.GetAsset(assets.AssetAudioMusic)
+	stream, _ := vorbis.DecodeF32(bytes.NewReader(b))
+	audio, _ := context.NewPlayerF32(stream)
+	audio.SetVolume(0.3)
+	audio.Play()
+	components.AudioPlayer.Set(entry, audio)
 
 	return nil
 }

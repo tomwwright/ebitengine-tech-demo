@@ -10,6 +10,7 @@ var (
 	State           = donburi.NewTag().SetName("State")
 	Assets          = donburi.NewTag().SetName("Assets")
 	MusicPlayer     = donburi.NewTag().SetName("MusicPlayer")
+	FilterChange    = donburi.NewTag().SetName("FilterChange")
 )
 
 const ResolvTagInteractive = "Interactive"
