@@ -59,6 +59,11 @@ func constructSequence(w donburi.World, stepsList []yaml.Step) *sequences.Sequen
 				Name:  s.Music.Name,
 				World: w,
 			}
+		} else if s.Camera != nil {
+			step = &steps.ZoomStep{
+				Zoom:  s.Camera.Zoom,
+				World: w,
+			}
 		} else {
 			fmt.Printf("Unknown step: %+v\n", s)
 		}

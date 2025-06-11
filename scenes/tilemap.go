@@ -12,7 +12,6 @@ import (
 	"github.com/tomwwright/ebitengine-tech-demo/factories"
 	"github.com/tomwwright/ebitengine-tech-demo/interactions"
 	"github.com/tomwwright/ebitengine-tech-demo/systems"
-	"github.com/tomwwright/ebitengine-tech-demo/tags"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
@@ -75,6 +74,7 @@ func NewTilemapScene() (*TilemapScene, error) {
 	scene.ecs.AddSystem(scene.Objects.Update)
 	scene.ecs.AddSystem(systems.UpdateFilterChange)
 	scene.ecs.AddSystem(systems.UpdateMusicChange)
+	scene.ecs.AddSystem(systems.UpdateZoomChange)
 	scene.ecs.AddSystem(render.Update)
 	scene.ecs.AddRenderer(ecs.LayerDefault, render.Draw)
 
@@ -105,18 +105,14 @@ func constructState(s *TilemapScene) {
 func constructScreenContainer(s *TilemapScene) {
 	world := s.ecs.World
 	e := archetypes.ScreenContainer.Create(world)
-	t := components.Transform.Get(e)
-
-	w := float64(constants.ScreenWidth/constants.Scale) - constants.TileSize
-	h := float64(constants.ScreenHeight/constants.Scale) - constants.TileSize
-
-	t.LocalPosition = math.NewVec2(-w/2, -h/3)
+	transform.GetTransform(e).LocalScale = math.NewVec2(constants.Scale, constants.Scale)
 }
 
 func constructCamera(s *TilemapScene) {
 	w := s.ecs.World
 	e := factories.CreateCamera(w)
-	transform.AppendChild(tags.ScreenContainer.MustFirst(w), e, false)
+	container := archetypes.CameraContainer.Create(w)
+	transform.AppendChild(container, e, false)
 }
 
 func (s *TilemapScene) ConfigureAssets(files fs.ReadFileFS) {

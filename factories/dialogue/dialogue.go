@@ -21,8 +21,9 @@ import (
 )
 
 const DialogueSpeed = 12.0
-const FontWidth = 5.0
-const DialogueMaxLineLength = constants.ScreenWidth * 0.70 / (FontWidth / constants.Scale)
+const FontWidth = 6.0
+const FontScaling = 0.75
+const DialogueMaxLineLength = (constants.ScreenWidth - constants.TileSize*constants.Scale) / (FontWidth * constants.Scale * FontScaling)
 
 var BackdropImage = createDialogueBackdrop()
 var DialogueFont = text.NewGoXFace(bitmapfont.Face)
@@ -38,7 +39,7 @@ func CreateDialogue(w donburi.World, text string) {
 	backdrop := w.Entry(entity)
 
 	t := components.Transform.Get(backdrop)
-	t.LocalPosition = math.NewVec2(constants.TileSize/2, float64(constants.ScreenHeight/constants.Scale-BackdropImage.Bounds().Dy()-constants.TileSize/2))
+	t.LocalPosition = math.NewVec2(constants.TileSize, float64(constants.ScreenHeight-BackdropImage.Bounds().Dy()*constants.Scale-constants.TileSize))
 	components.Sprite.Set(backdrop, &components.SpriteData{
 		Image: BackdropImage,
 		Layer: constants.LayerUI,
@@ -73,10 +74,12 @@ func CreateDialogue(w donburi.World, text string) {
 	entry := w.Entry(entity)
 
 	t = components.Transform.Get(entry)
-	t.LocalPosition = math.NewVec2(constants.TileSize/2, constants.TileSize/2)
+	t.LocalPosition = math.NewVec2(constants.TileSize, constants.TileSize)
+	t.LocalScale = math.NewVec2(FontScaling, FontScaling)
 	components.Text.Set(entry, &components.TextData{
-		Font: DialogueFont,
-		Text: "",
+		Font:  DialogueFont,
+		Text:  "",
+		Layer: constants.LayerUI,
 	})
 	components.TextAnimation.Set(entry, &components.TextAnimationData{
 		Speed:  DialogueSpeed,
@@ -97,8 +100,8 @@ func CloseDialogue(w donburi.World) {
 }
 
 func createDialogueBackdrop() *ebiten.Image {
-	w := constants.ScreenWidth/constants.Scale - constants.TileSize
-	h := constants.ScreenHeight/constants.Scale/3 - constants.TileSize/2
+	w := constants.Width - constants.TileSize/2
+	h := constants.Height / 3
 	img := ebiten.NewImage(w, h)
 	img.Fill(color.RGBA{0, 0, 0, 100})
 	return img

@@ -49,13 +49,18 @@ func LoadScene(world *tilemap.TileMap, scene *TilemapScene) error {
 
 	scene.Objects.Space = resolv.NewSpace(world.Width*constants.TileSize, world.Height*constants.TileSize, constants.TileSize/2, constants.TileSize/2)
 
-	// attach player to the screen container
+	// attach camera container to the player
 
-	transform.AppendChild(tags.Player.MustFirst(scene.ecs.World), tags.ScreenContainer.MustFirst(scene.ecs.World), false)
+	e := tags.CameraContainer.MustFirst(scene.ecs.World)
+	t := transform.GetTransform(e)
+	t.LocalPosition.X = constants.TileSize / 2
+	t.LocalPosition.Y = constants.Width / 3
+
+	transform.AppendChild(tags.Player.MustFirst(scene.ecs.World), e, false)
 
 	// construct music player
 
-	e, err := factories.CreateMusicPlayer(w, assets.AssetAudioMusic)
+	e, err = factories.CreateMusicPlayer(w, assets.AssetAudioMusic)
 	if err != nil {
 		return fmt.Errorf("failed to create music: %w", err)
 	}

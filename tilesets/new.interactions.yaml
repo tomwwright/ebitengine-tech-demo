@@ -36,6 +36,9 @@ interactions:
         else:
           - dialogue:
               text: You found it! Thank you so much!
+  forest_gravestone:
+    - dialogue:
+        text: The engraving on the gravestone has worn away. The stone is damp with moss and lichen. 
 triggers:
   test:
     - dialogue:
@@ -57,11 +60,15 @@ triggers:
         name: day
     - music:
         name: town
+    - camera:
+        zoom: 4
   enter_forest:
     - filter:
         name: night
     - music:
         name: forest
+    - camera:
+        zoom: 5
   door:
     - teleport:
         to: exit

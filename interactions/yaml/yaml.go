@@ -16,6 +16,7 @@ type Step struct {
 	Teleport *Teleport `yaml:"teleport"`
 	Filter   *Filter   `yaml:"filter"`
 	Music    *Music    `yaml:"music"`
+	Camera   *Camera   `yaml:"camera"`
 }
 
 type Debug struct {
@@ -46,6 +47,10 @@ type Filter struct {
 
 type Music struct {
 	Name string `yaml:"name"`
+}
+
+type Camera struct {
+	Zoom float64 `yaml:"zoom"`
 }
 
 type When struct {

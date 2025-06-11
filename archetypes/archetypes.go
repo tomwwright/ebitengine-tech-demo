@@ -19,5 +19,6 @@ var (
 	Assets          = Archetype{tags.Assets, components.Assets, components.AudioContext}
 	Camera          = Archetype{tags.Camera, components.Transform, components.Movement, components.Camera}
 	ScreenContainer = Archetype{tags.ScreenContainer, components.Transform}
+	CameraContainer = Archetype{tags.CameraContainer, components.Transform}
 	State           = Archetype{tags.State, components.State}
 )

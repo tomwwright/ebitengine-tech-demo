@@ -6,8 +6,9 @@ import (
 )
 
 type TextData struct {
-	Text string
-	Font text.Face
+	Text  string
+	Font  text.Face
+	Layer int
 }
 
 var Text = donburi.NewComponentType[TextData]()
