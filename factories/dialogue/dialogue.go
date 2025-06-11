@@ -5,6 +5,7 @@ import (
 	"image/color"
 	"strings"
 
+	"github.com/tomwwright/ebitengine-tech-demo/archetypes"
 	"github.com/tomwwright/ebitengine-tech-demo/assets"
 	"github.com/tomwwright/ebitengine-tech-demo/components"
 	"github.com/tomwwright/ebitengine-tech-demo/constants"
@@ -35,8 +36,7 @@ func CreateDialogue(w donburi.World, text string) {
 
 	// backdrop
 
-	entity := w.Create(tags.Dialogue, components.Transform, components.Sprite, components.AudioPlayer)
-	backdrop := w.Entry(entity)
+	backdrop := archetypes.Dialogue.Create(w)
 
 	t := components.Transform.Get(backdrop)
 	t.LocalPosition = math.NewVec2(constants.TileSize, float64(constants.ScreenHeight-BackdropImage.Bounds().Dy()*constants.Scale-constants.TileSize))
@@ -70,8 +70,7 @@ func CreateDialogue(w donburi.World, text string) {
 
 	// text
 
-	entity = w.Create(components.Transform, components.Text, components.TextAnimation)
-	entry := w.Entry(entity)
+	entry := archetypes.Text.Create(w)
 
 	t = components.Transform.Get(entry)
 	t.LocalPosition = math.NewVec2(constants.TileSize, constants.TileSize)

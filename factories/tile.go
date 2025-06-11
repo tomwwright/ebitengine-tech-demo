@@ -1,6 +1,7 @@
 package factories
 
 import (
+	"github.com/tomwwright/ebitengine-tech-demo/archetypes"
 	"github.com/tomwwright/ebitengine-tech-demo/components"
 	"github.com/tomwwright/ebitengine-tech-demo/components/collision"
 
@@ -10,22 +11,20 @@ import (
 )
 
 func CreateTile(w donburi.World, position math.Vec2, layer int, collisionType collision.CollisionType, image *ebiten.Image) *donburi.Entry {
-	entity := w.Create(components.Transform, components.Sprite)
-	entry := w.Entry(entity)
-
-	transform := components.Transform.Get(entry)
+	e := archetypes.Sprite.Create(w)
+	transform := components.Transform.Get(e)
 
 	transform.LocalPosition = position
 	scale := float64(1)
 	transform.LocalScale = math.NewVec2(scale, scale)
 
-	sprite := components.Sprite.Get(entry)
+	sprite := components.Sprite.Get(e)
 	sprite.Image = image
 	sprite.Layer = layer
 
 	if collisionType != collision.CollisionNone {
-		AddCollision(entry, collisionType)
+		AddCollision(e, collisionType)
 	}
 
-	return entry
+	return e
 }

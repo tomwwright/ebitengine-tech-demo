@@ -3,6 +3,7 @@ package factories
 import (
 	"fmt"
 
+	"github.com/tomwwright/ebitengine-tech-demo/archetypes"
 	"github.com/tomwwright/ebitengine-tech-demo/components"
 	"github.com/tomwwright/ebitengine-tech-demo/components/collision"
 	"github.com/tomwwright/ebitengine-tech-demo/constants"
@@ -19,25 +20,22 @@ type Animations interface {
 }
 
 func CreatePlayer(w donburi.World, animations Animations, position math.Vec2, layer int) (*donburi.Entry, error) {
-
-	entity := w.Create(tags.Player, components.Transform, components.Sprite, components.Object, components.Movement, components.Animation, components.CharacterAnimations)
-	entry := w.Entry(entity)
-
-	transform := components.Transform.Get(entry)
+	e := archetypes.Player.Create(w)
+	transform := components.Transform.Get(e)
 
 	transform.LocalPosition = position
 	scale := float64(1)
 	transform.LocalScale = math.NewVec2(scale, scale)
 
-	object := components.NewObject(entry, constants.TileSize, constants.TileSize, tags.ResolvTagInteractive)
-	components.Object.Set(entry, object)
+	object := components.NewObject(e, constants.TileSize, constants.TileSize, tags.ResolvTagInteractive)
+	components.Object.Set(e, object)
 
-	sprite := components.Sprite.Get(entry)
+	sprite := components.Sprite.Get(e)
 	sprite.Layer = layer
 
-	AddCollision(entry, collision.CollisionBottom)
+	AddCollision(e, collision.CollisionBottom)
 
-	ca := components.CharacterAnimations.Get(entry)
+	ca := components.CharacterAnimations.Get(e)
 	keys := []string{systems.AnimationKeyIdle, systems.AnimationKeyWalkUp, systems.AnimationKeyWalkDown, systems.AnimationKeyWalkRight, systems.AnimationKeyWalkLeft}
 	for _, k := range keys {
 		a := animations.GetAnimation(k)
@@ -47,5 +45,5 @@ func CreatePlayer(w donburi.World, animations Animations, position math.Vec2, la
 		ca.Add(a)
 	}
 
-	return entry, nil
+	return e, nil
 }

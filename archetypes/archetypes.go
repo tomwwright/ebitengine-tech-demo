@@ -21,4 +21,8 @@ var (
 	ScreenContainer = Archetype{tags.ScreenContainer, components.Transform}
 	CameraContainer = Archetype{tags.CameraContainer, components.Transform}
 	State           = Archetype{tags.State, components.State}
+	Dialogue        = Archetype{tags.Dialogue, components.Transform, components.Sprite, components.AudioPlayer}
+	Text            = Archetype{components.Transform, components.Text, components.TextAnimation}
+	Player          = Archetype{tags.Player, components.Transform, components.Sprite, components.Object, components.Movement, components.Animation, components.CharacterAnimations}
+	Sprite          = Archetype{components.Transform, components.Sprite}
 )
