@@ -185,7 +185,7 @@ func IsVisible(position math.Vec2, size math.Vec2) bool {
 	viewport := math.NewVec2(constants.ScreenWidth, constants.ScreenHeight)
 	minX, minY := position.XY()
 	maxX, maxY := position.Add(size).XY()
-	if maxX < -viewport.X*0.1 || maxY < -viewport.Y*0.1 || minX > viewport.X*1.1 || minY > viewport.Y*1.1 {
+	if maxX < -viewport.X*0.2 || maxY < -viewport.Y*0.2 || minX > viewport.X*1.2 || minY > viewport.Y*1.2 {
 		return false
 	}
 	return true

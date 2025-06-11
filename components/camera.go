@@ -46,7 +46,7 @@ func (c *CameraData) SetViewportFromImage(image *ebiten.Image) {
 func (c *CameraData) IsVisible(position math.Vec2, size math.Vec2) bool {
 	minX, minY := c.ToScreen.Apply(position.XY())
 	maxX, maxY := c.ToScreen.Apply(position.Add(size).XY())
-	if maxX < -c.Viewport.X*0.1 || maxY < -c.Viewport.Y*0.1 || minX > c.Viewport.X*1.1 || minY > c.Viewport.Y*1.1 {
+	if maxX < -c.Viewport.X*0.2 || maxY < -c.Viewport.Y*0.2 || minX > c.Viewport.X*1.2 || minY > c.Viewport.Y*1.2 {
 		return false
 	}
 	return true
