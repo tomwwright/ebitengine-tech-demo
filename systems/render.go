@@ -58,6 +58,7 @@ func (r *Render) Update(ecs *ecs.ECS) {
 		rotation := transform.WorldRotation(e)
 		scale := transform.WorldScale(e)
 		camera := components.Camera.Get(e)
+		camera.SetViewportFromImage(r.buffer)
 		camera.Calculate(position, scale, rotation)
 	})
 }
@@ -69,7 +70,6 @@ func (r *Render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 		return
 	}
 	camera := components.Camera.Get(e)
-	camera.SetViewportFromImage(screen)
 
 	entries := []*donburi.Entry{}
 	r.sprites.Each(ecs.World, func(entry *donburi.Entry) {
