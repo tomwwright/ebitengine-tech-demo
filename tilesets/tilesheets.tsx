@@ -633,11 +633,7 @@
  <tile id="544"/>
  <tile id="545"/>
  <tile id="546"/>
- <tile id="547">
-  <properties>
-   <property name="layerOffset" type="int" value="-1"/>
-  </properties>
- </tile>
+ <tile id="547"/>
  <tile id="548"/>
  <tile id="549"/>
  <tile id="550"/>
@@ -772,7 +768,11 @@
  </tile>
  <tile id="655"/>
  <tile id="656"/>
- <tile id="657"/>
+ <tile id="657">
+  <properties>
+   <property name="collision" value="top"/>
+  </properties>
+ </tile>
  <tile id="658"/>
  <tile id="659"/>
  <tile id="660"/>
@@ -863,9 +863,21 @@
  <tile id="726"/>
  <tile id="727"/>
  <tile id="728"/>
- <tile id="729"/>
- <tile id="730"/>
- <tile id="731"/>
+ <tile id="729">
+  <properties>
+   <property name="collision" value="top"/>
+  </properties>
+ </tile>
+ <tile id="730">
+  <properties>
+   <property name="collision" value="top"/>
+  </properties>
+ </tile>
+ <tile id="731">
+  <properties>
+   <property name="collision" value="top"/>
+  </properties>
+ </tile>
  <tile id="732"/>
  <tile id="733"/>
  <tile id="734"/>
@@ -898,9 +910,21 @@
   </properties>
  </tile>
  <tile id="748"/>
- <tile id="749"/>
- <tile id="750"/>
- <tile id="751"/>
+ <tile id="749">
+  <properties>
+   <property name="collision" value="top"/>
+  </properties>
+ </tile>
+ <tile id="750">
+  <properties>
+   <property name="collision" value="top"/>
+  </properties>
+ </tile>
+ <tile id="751">
+  <properties>
+   <property name="collision" value="top"/>
+  </properties>
+ </tile>
  <tile id="752"/>
  <tile id="753"/>
  <tile id="754"/>

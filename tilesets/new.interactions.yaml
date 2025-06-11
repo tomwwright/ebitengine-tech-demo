@@ -38,7 +38,10 @@ interactions:
               text: You found it! Thank you so much!
   forest_gravestone:
     - dialogue:
-        text: The engraving on the gravestone has worn away. The stone is damp with moss and lichen. 
+        text: The engraving on the gravestone has worn away. The stone is damp with moss and lichen.
+  wheelbarrow:
+    - dialogue:
+        text: A well-used, tired old wheelbarrow. Who left that there?
 triggers:
   test:
     - dialogue:
@@ -55,6 +58,42 @@ triggers:
   door_home_outside_right:
     - teleport:
         to: door_home_inside_right
+  door_inn_inside_left:
+    - teleport:
+        to: door_inn_outside_left
+  door_inn_outside_left:
+    - teleport:
+        to: door_inn_inside_left
+  door_inn_inside_right:
+    - teleport:
+        to: door_inn_outside_right
+  door_inn_outside_right:
+    - teleport:
+        to: door_inn_inside_right
+  door_house_inside_front:
+    - teleport:
+        to: door_house_outside_front
+  door_house_outside_front:
+    - teleport:
+        to: door_house_inside_front
+  door_house_inside_back:
+    - teleport:
+        to: door_house_outside_back
+  door_house_outside_back:
+    - teleport:
+        to: door_house_inside_back
+  door_farm_inside:
+    - teleport:
+        to: door_farm_outside
+  door_farm_outside:
+    - teleport:
+        to: door_farm_inside
+  door_shop_inside:
+    - teleport:
+        to: door_shop_outside
+  door_shop_outside:
+    - teleport:
+        to: door_shop_inside
   exit_forest:
     - filter:
         name: day
