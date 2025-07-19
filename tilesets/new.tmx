@@ -296,6 +296,12 @@
   <object id="27" name="door_house_outside_front" x="752" y="160" width="16" height="16"/>
   <object id="28" name="door_house_inside_back" x="768" y="800" width="16" height="16"/>
   <object id="29" name="door_house_outside_back" x="752" y="120" width="16" height="16"/>
+  <object id="30" name="door_dungeon_outside" x="80" y="480" width="16" height="16"/>
+  <object id="31" name="door_dungeon_inside" x="928" y="936" width="16" height="16"/>
+  <object id="32" name="door_dungeon_lvl1_down" x="904" y="784" width="16" height="16"/>
+  <object id="33" name="door_dungeon_lvl2_up" x="1056" y="936" width="16" height="16"/>
+  <object id="34" name="door_dungeon_lvl2_down" x="1056" y="800" width="16" height="16"/>
+  <object id="35" name="door_dungeon_lvl3_up" x="1232" y="936" width="16" height="16"/>
  </objectgroup>
  <layer id="13" name="Over" width="80" height="60">
   <data encoding="csv">

@@ -94,6 +94,36 @@ triggers:
   door_shop_outside:
     - teleport:
         to: door_shop_inside
+  door_dungeon_outside:
+    - teleport:
+        to: door_dungeon_inside
+    - filter:
+        name: night
+    - music:
+        name: forest
+    - camera:
+        zoom: 5
+  door_dungeon_inside:
+    - teleport:
+        to: door_dungeon_outside
+    - filter:
+        name: day
+    - music:
+        name: town
+    - camera:
+        zoom: 4
+  door_dungeon_lvl1_down:
+    - teleport:
+        to: door_dungeon_lvl2_up
+  door_dungeon_lvl2_up:
+    - teleport:
+        to: door_dungeon_lvl1_down
+  door_dungeon_lvl2_down:
+    - teleport:
+        to: door_dungeon_lvl3_up
+  door_dungeon_lvl3_up:
+    - teleport:
+        to: door_dungeon_lvl2_down
   exit_forest:
     - filter:
         name: day
