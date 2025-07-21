@@ -6,6 +6,7 @@ import (
 	"github.com/solarlune/resolv"
 	"github.com/tomwwright/ebitengine-tech-demo/components"
 	"github.com/tomwwright/ebitengine-tech-demo/sequences"
+	"github.com/tomwwright/ebitengine-tech-demo/tags"
 
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/transform"
@@ -19,12 +20,22 @@ type DespawnStep struct {
 func (ds *DespawnStep) Run(done sequences.Done) {
 	defer done()
 
-	entry := findInteractionByName(ds.World, ds.Name)
+	var entry *donburi.Entry
+	if ds.Name == "self" {
+		entry = findCurrentInteraction(ds.World)
+	} else {
+		entry = findInteractionByName(ds.World, ds.Name)
+	}
 	if entry != nil {
 		findAndRemoveOverlappingObjectsByEntry(ds.World, entry)
 	}
 
 	fmt.Printf("DespawnStep: %s => %+v\n", ds.Name, entry)
+}
+
+func findCurrentInteraction(w donburi.World) *donburi.Entry {
+	player := tags.Player.MustFirst(w) // TODO this code should be shared with observers/currentinteraction somehow
+	return components.Target.GetValue(player)
 }
 
 func findInteractionByName(w donburi.World, name string) (entry *donburi.Entry) {

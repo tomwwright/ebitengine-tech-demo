@@ -29,6 +29,7 @@ func (d *Director) OnInteractionEvent(w donburi.World, event events.Interaction)
 	if steps == nil {
 		return
 	}
+	d.setOnInteractionFinishedEvent(w, event)
 	sequence := constructSequence(w, steps)
 	d.RunnableManager.Start(sequence)
 }
@@ -41,4 +42,10 @@ func (d *Director) OnTriggerEvent(w donburi.World, entry *donburi.Entry) {
 	}
 	sequence := constructSequence(w, steps)
 	d.RunnableManager.Start(sequence)
+}
+
+func (d *Director) setOnInteractionFinishedEvent(w donburi.World, event events.Interaction) {
+	d.RunnableManager.OnFinish = func() {
+		events.InteractionFinishedEvent.Publish(w, event)
+	}
 }

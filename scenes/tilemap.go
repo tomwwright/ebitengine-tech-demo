@@ -11,6 +11,7 @@ import (
 	"github.com/tomwwright/ebitengine-tech-demo/events"
 	"github.com/tomwwright/ebitengine-tech-demo/factories"
 	"github.com/tomwwright/ebitengine-tech-demo/interactions"
+	"github.com/tomwwright/ebitengine-tech-demo/observers"
 	"github.com/tomwwright/ebitengine-tech-demo/systems"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -39,16 +40,19 @@ func NewTilemapScene() (*TilemapScene, error) {
 		fmt.Printf("InputEvent: %+v\n", event)
 	}
 
+	observers.SetupCurrentInteractionObserver(scene.ecs.World)
+
 	director := scene.Director
 	events.InteractionEvent.Subscribe(scene.ecs.World, func(w donburi.World, event events.Interaction) {
 		playerMovement.OnInputEvent(scene.ecs.World, events.InputMoveNone) // cancel player movement
 		events.InputEvent.Unsubscribe(scene.ecs.World, playerMovement.OnInputEvent)
 		events.InputEvent.Unsubscribe(scene.ecs.World, systems.OnInteractEvent)
 	})
-	director.RunnableManager.OnFinish = func() {
+
+	events.InteractionFinishedEvent.Subscribe(scene.ecs.World, func(w donburi.World, event events.Interaction) {
 		events.InputEvent.Subscribe(scene.ecs.World, playerMovement.OnInputEvent)
 		events.InputEvent.Subscribe(scene.ecs.World, systems.OnInteractEvent)
-	}
+	})
 
 	events.InputEvent.Subscribe(scene.ecs.World, debugInputEvents)
 	events.InputEvent.Subscribe(scene.ecs.World, playerMovement.OnInputEvent)

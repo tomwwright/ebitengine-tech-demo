@@ -28,7 +28,7 @@ func AddCollision(entry *donburi.Entry, collision collision.CollisionType) error
 	first := objects[0]
 	if first.Position == constants.Zero {
 		object := resolv.NewObject(0, 0, first.Size.X, first.Size.Y, tags.ResolvTagCollider)
-		object.Data = object
+		object.Data = entry
 		entry.AddComponent(components.Object)
 		components.Object.Set(entry, object)
 
