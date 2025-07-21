@@ -14,16 +14,12 @@ interactions:
         text: The town well is full to the brim with cool, fresh water.
   coin:
     - dialogue:
-        text: Hey, there is a shiny coin here in the grass!
+        text: Hey, there is a shiny coin here on the ground!
     - despawn:
-        name: coin
-    - debug: {}
+        name: self
     - state:
         key: has_coin
-        action: true
-    - debug: {}
-    - dialogue:
-        text: Nice!
+        action: increment
   old_man:
     - when:
         conditions:
@@ -42,6 +38,12 @@ interactions:
   wheelbarrow:
     - dialogue:
         text: A well-used, tired old wheelbarrow. Who left that there?
+  person_kid_with_sick_grandpa:
+    - dialogue:
+        text: My grandpa is quite sick. Please try to not wake him...
+  person_sick_grandpa:
+    - dialogue:
+        text: ...
 triggers:
   test:
     - dialogue:
