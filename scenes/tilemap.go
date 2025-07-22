@@ -43,25 +43,32 @@ func NewTilemapScene() (*TilemapScene, error) {
 	observers.SetupCurrentInteractionObserver(scene.ecs.World)
 	observers.SetupFrameRateObserver(scene.ecs.World)
 
-	director := scene.Director
-	events.InteractionEvent.Subscribe(scene.ecs.World, func(w donburi.World, event events.Interaction) {
-		playerMovement.OnInputEvent(scene.ecs.World, events.InputMoveNone) // cancel player movement
-		events.InputEvent.Unsubscribe(scene.ecs.World, playerMovement.OnInputEvent)
-		events.InputEvent.Unsubscribe(scene.ecs.World, systems.OnInteractEvent)
-	})
-
-	events.InteractionFinishedEvent.Subscribe(scene.ecs.World, func(w donburi.World, event events.Interaction) {
-		events.InputEvent.Subscribe(scene.ecs.World, playerMovement.OnInputEvent)
-		events.InputEvent.Subscribe(scene.ecs.World, systems.OnInteractEvent)
-	})
-
 	events.InputEvent.Subscribe(scene.ecs.World, debugInputEvents)
 	events.InputEvent.Subscribe(scene.ecs.World, playerMovement.OnInputEvent)
 	events.InputEvent.Subscribe(scene.ecs.World, systems.OnInteractEvent)
 	events.InputEvent.Subscribe(scene.ecs.World, dialogue.OnInteractEvent)
 
-	events.InteractionEvent.Subscribe(scene.ecs.World, director.OnInteractionEvent)
-	events.TriggerEvent.Subscribe(scene.ecs.World, director.OnTriggerEvent)
+	disableControls := func(w donburi.World) {
+		playerMovement.OnInputEvent(w, events.InputMoveNone) // cancel player movement
+		events.InputEvent.Unsubscribe(w, playerMovement.OnInputEvent)
+		events.InputEvent.Unsubscribe(w, systems.OnInteractEvent)
+	}
+	enableControls := func(w donburi.World) {
+		events.InputEvent.Subscribe(w, playerMovement.OnInputEvent)
+		events.InputEvent.Subscribe(w, systems.OnInteractEvent)
+	}
+
+	events.InteractionEvent.Subscribe(scene.ecs.World, scene.Director.OnInteractionEvent)
+	events.InteractionEvent.Subscribe(scene.ecs.World, func(w donburi.World, event events.Interaction) {
+		disableControls(w)
+	})
+	events.TriggerEvent.Subscribe(scene.ecs.World, scene.Director.OnTriggerEvent)
+	events.TriggerEvent.Subscribe(scene.ecs.World, func(w donburi.World, entry *donburi.Entry) {
+		disableControls(w)
+	})
+	events.InteractionFinishedEvent.Subscribe(scene.ecs.World, func(w donburi.World, event events.Interaction) {
+		enableControls(w)
+	})
 
 	events.MovementFinishedEvent.Subscribe(scene.ecs.World, systems.OnMovementFinishedForTriggers)
 

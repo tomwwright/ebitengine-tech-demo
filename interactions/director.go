@@ -40,6 +40,10 @@ func (d *Director) OnTriggerEvent(w donburi.World, entry *donburi.Entry) {
 	if steps == nil {
 		return
 	}
+	d.setOnInteractionFinishedEvent(w, events.Interaction{
+		Name:   name, // TODO make these events the same thing, just the entry
+		Target: entry,
+	})
 	sequence := constructSequence(w, steps)
 	d.RunnableManager.Start(sequence)
 }
