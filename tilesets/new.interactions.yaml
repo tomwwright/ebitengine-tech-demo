@@ -146,5 +146,11 @@ triggers:
   exit:
     - teleport:
         to: door
+  gate:
+    - dialogue:
+        text: Hey! Sorry kiddo, but if the captain knew I let you out - he'd have my bacon for breakfast.
+    - movement:
+        direction: down
+        distance: 2
 
   

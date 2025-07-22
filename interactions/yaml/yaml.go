@@ -1,6 +1,8 @@
 package yaml
 
-import "gopkg.in/yaml.v3"
+import (
+	"gopkg.in/yaml.v3"
+)
 
 type Interactions struct {
 	Interactions map[string][]Step `yaml:"interactions"`
@@ -17,6 +19,7 @@ type Step struct {
 	Filter   *Filter   `yaml:"filter"`
 	Music    *Music    `yaml:"music"`
 	Camera   *Camera   `yaml:"camera"`
+	Movement *Movement `yaml:"movement"`
 }
 
 type Debug struct {
@@ -43,6 +46,11 @@ type Teleport struct {
 
 type Filter struct {
 	Name string `yaml:"name"`
+}
+
+type Movement struct {
+	Direction string `yaml:"direction"`
+	Distance  int    `yaml:"distance"`
 }
 
 type Music struct {

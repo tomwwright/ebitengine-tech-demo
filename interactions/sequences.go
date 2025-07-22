@@ -64,6 +64,11 @@ func constructSequence(w donburi.World, stepsList []yaml.Step) *sequences.Sequen
 				Zoom:  s.Camera.Zoom,
 				World: w,
 			}
+		} else if s.Movement != nil {
+			step = &steps.MovementStep{
+				Movement: *s.Movement,
+				World:    w,
+			}
 		} else {
 			fmt.Printf("Unknown step: %+v\n", s)
 		}
