@@ -145,6 +145,7 @@ func (t *Tiled) Objects() []tilemap.Object {
 
 			object := tilemap.Object{
 				Position: math.NewVec2(o.X, o.Y),
+				Size:     math.NewVec2(o.Width, o.Height),
 				Name:     o.Name,
 			}
 

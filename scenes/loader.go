@@ -35,7 +35,7 @@ func LoadScene(world *tilemap.TileMap, scene *TilemapScene) error {
 	// spawn objects
 
 	for _, o := range world.Objects {
-		factories.CreateObject(w, o.Position, o.Name)
+		factories.CreateObject(w, o.Position, o.Size, o.Name)
 	}
 
 	// spawn player

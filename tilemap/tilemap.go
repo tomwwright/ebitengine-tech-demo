@@ -36,6 +36,7 @@ type TileInstance struct {
 
 type Object struct {
 	Position math.Vec2
+	Size     math.Vec2
 	Name     string
 }
 
