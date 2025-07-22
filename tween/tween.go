@@ -11,9 +11,10 @@ import (
 )
 
 type Vec2Tween struct {
-	Tweens [2]*gween.Tween
-	From   math.Vec2
-	To     math.Vec2
+	Tweens   [2]*gween.Tween
+	From     math.Vec2
+	To       math.Vec2
+	OnFinish func()
 }
 
 func NewVec2Tween(from math.Vec2, to math.Vec2, duration float32, easing ease.TweenFunc) *Vec2Tween {
@@ -31,13 +32,18 @@ func (s *Vec2Tween) Update(dt float32) (current math.Vec2, isFinished bool) {
 	x, _ := s.Tweens[0].Update(dt)
 	y, isFinished := s.Tweens[1].Update(dt)
 
+	if isFinished && s.OnFinish != nil {
+		s.OnFinish()
+	}
+
 	return math.NewVec2(float64(x), float64(y)), isFinished
 }
 
 type Tween[T any] struct {
 	gween.Tween
-	From T
-	To   T
+	From     T
+	To       T
+	OnFinish func()
 }
 
 func NewTween[T any](from T, to T, duration time.Duration, easing ease.TweenFunc) Tween[T] {
@@ -59,6 +65,10 @@ func (t *Tween[T]) Update(dt float32) (current T, isFinished bool) {
 		current = TweenColors(from.(color.Color), to.(color.Color), d).(T)
 	default:
 		panic(fmt.Errorf("unable to tween type: %+v -> %+v", from, to))
+	}
+
+	if isFinished && t.OnFinish != nil {
+		t.OnFinish()
 	}
 
 	return current, isFinished

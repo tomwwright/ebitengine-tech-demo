@@ -20,8 +20,6 @@ type MovementStep struct {
 }
 
 func (s *MovementStep) Run(done sequences.Done) {
-	defer done()
-
 	v := constants.Zero
 	switch s.Direction {
 	case "up":
@@ -48,4 +46,5 @@ func (s *MovementStep) Run(done sequences.Done) {
 	from := transform.LocalPosition
 	to := from.Add(v)
 	movement.Tween = tween.NewVec2Tween(from, to, float32(constants.MovementSpeed)*float32(v.Magnitude()), ease.Linear)
+	movement.Tween.OnFinish = done
 }
