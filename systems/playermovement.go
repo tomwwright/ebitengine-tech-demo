@@ -69,7 +69,7 @@ func (m *PlayerMovement) Update(ecs *ecs.ECS) {
 		transform := components.Transform.Get(playerEntry)
 		from := transform.LocalPosition
 		to := from.Add(delta)
-		movement.Tween = tween.NewVec2Tween(from, to, 0.12, ease.Linear)
+		movement.Tween = tween.NewVec2Tween(from, to, constants.MovementSpeed*float32(d), ease.Linear)
 	} else {
 		// if there is collision, only set direction
 		movement.LastDirection = v

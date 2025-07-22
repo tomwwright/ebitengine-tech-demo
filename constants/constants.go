@@ -19,6 +19,7 @@ const (
 	LayerUI           = 99
 	AudioSampleRate   = 22000
 	LineSpacing       = 16
+	MovementSpeed     = 0.24 / TileSize
 )
 
 var Up = math.NewVec2(0, -1)
