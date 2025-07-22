@@ -41,6 +41,7 @@ func NewTilemapScene() (*TilemapScene, error) {
 	}
 
 	observers.SetupCurrentInteractionObserver(scene.ecs.World)
+	observers.SetupFrameRateObserver(scene.ecs.World)
 
 	director := scene.Director
 	events.InteractionEvent.Subscribe(scene.ecs.World, func(w donburi.World, event events.Interaction) {
@@ -93,6 +94,7 @@ func NewTilemapScene() (*TilemapScene, error) {
 }
 
 func (s *TilemapScene) Update() {
+	events.UpdateEvent.Publish(s.ecs.World, constants.DeltaTimeDuration)
 	s.ecs.Update()
 }
 
